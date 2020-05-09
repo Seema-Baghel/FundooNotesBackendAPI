@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fundoonotes.dto.LoginDto;
 import com.fundoonotes.dto.ResetPasswordDto;
 import com.fundoonotes.dto.UserDto;
+import com.fundoonotes.exception.UserDetailsNullException;
 import com.fundoonotes.model.UserModel;
 import com.fundoonotes.responses.Response;
 import com.fundoonotes.service.UserService;
@@ -31,7 +32,7 @@ public class UserController {
 	private Jwt tokenGenerator;
 	
 	@PostMapping("/register")
-	public ResponseEntity<Response> register(@RequestBody UserDto userdto) {		
+	public ResponseEntity<Response> register(@RequestBody UserDto userdto) throws UserDetailsNullException {		
 	
 		UserModel user = userservice.register(userdto);
 		
@@ -43,10 +44,9 @@ public class UserController {
 	}  
 	
 	@PostMapping("/login")
-	public ResponseEntity<Response> login(@RequestBody LoginDto logindto) {
+	public ResponseEntity<Response> login(@RequestBody LoginDto logindto) throws UserDetailsNullException {
 		
 		UserModel userInformation = userservice.login(logindto);
-		
 		if (userInformation != null) 
 			return ResponseEntity.status(HttpStatus.OK)
 								 .body(new Response("Login Successfull", 200));
@@ -56,7 +56,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/verify/{token}")
-	public ResponseEntity<Response> userVerification(@PathVariable("token") String token) {
+	public ResponseEntity<Response> userVerification(@PathVariable("token") String token) throws UserDetailsNullException {
 	    
 		UserModel user = userservice.verify(token);
 		
@@ -68,7 +68,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/forgotpassword")
-	public ResponseEntity<Response> forgotPassword(@RequestParam("email") String email) {
+	public ResponseEntity<Response> forgotPassword(@RequestParam("email") String email) throws UserDetailsNullException {
 		
 		UserModel user = userservice.forgetPassword(email);
 		
@@ -80,7 +80,7 @@ public class UserController {
 	}
 
 	@PutMapping("/resetpassword/{token}")
-	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @PathVariable("token") String token) {
+	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @PathVariable("token") String token) throws UserDetailsNullException {
 		
 		UserModel user = userservice.resetPassword(resetPassword, token);
 		

@@ -3,17 +3,20 @@ package com.fundoonotes.utility;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.Verification;
+import com.fundoonotes.constants.Constants;
 
 @Service
 public class Jwt{
 	
-	private static final String SECRET_KEY = "SB45BU5";
-	
 	public String createToken(long l)
 	{
-		Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+		Algorithm algorithm = Algorithm.HMAC256(Constants.SECRET_KEY);
 		return JWT.create()
 				.withClaim("email",l)
 				.sign(algorithm);
@@ -21,7 +24,7 @@ public class Jwt{
 	
 	public long parseJwtToken(String token)
 	{
-		Claim claim = JWT.require(Algorithm.HMAC256(SECRET_KEY))
+		Claim claim = JWT.require(Algorithm.HMAC256(Constants.SECRET_KEY))
 				.build()
 				.verify(token)
 				.getClaim("email");

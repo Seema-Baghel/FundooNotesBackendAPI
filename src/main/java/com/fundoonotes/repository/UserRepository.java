@@ -29,4 +29,8 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 	@Modifying
 	@Query(value="update user_model set is_verified = true where id = :id", nativeQuery = true)
 	void verify(long id);
+
+	@Modifying
+	@Query(value="update user_model set modified_time = now()  where id = :id", nativeQuery = true)
+	void modifiedTime(long id);
 }

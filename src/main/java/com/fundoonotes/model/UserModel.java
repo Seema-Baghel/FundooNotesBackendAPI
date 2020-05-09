@@ -1,12 +1,16 @@
 package com.fundoonotes.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -33,13 +37,15 @@ public class UserModel {
       @Column(columnDefinition = "boolean default false")
       private boolean isVerified;
       
-//      private Date creatorStamp;
-      
       @Column(name = "created_at")
   	  public Date createdAt;
 
-  	   @Column(name = "modified_time")
-  	   public Date modifiedTime;
+  	  @Column(name = "modified_time")
+  	  public Date modifiedTime;
+  	  
+//  	  @OneToMany(cascade = CascadeType.ALL)
+//  	  @JoinColumn(name = "userId")
+//  	  private List<NoteModel> notes;
   	  
       public UserModel(){
       }
@@ -130,15 +136,12 @@ public class UserModel {
 		this.modifiedTime = modifiedTime;
 	}
 
-	
-//	public Date getCreatorStamp() {
-//		return creatorStamp;
+//	public List<NoteModel> getNotes() {
+//		return notes;
 //	}
 //
-//	public void setCreatorStamp(Date creatorStamp) {
-//		this.creatorStamp = creatorStamp;
+//	public void setNotes(List<NoteModel> notes) {
+//		this.notes = notes;
 //	}
 	
-	
-  
 }

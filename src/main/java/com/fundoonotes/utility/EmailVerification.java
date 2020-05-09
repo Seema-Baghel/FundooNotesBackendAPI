@@ -6,26 +6,29 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import com.fundoonotes.constants.Constants;
+
 @Component
 public class EmailVerification {
 
 	@Autowired
 	private JavaMailSender mailsender;
+	
+	SimpleMailMessage mail = new SimpleMailMessage();
+	
 
 	public void sendVerifyMail(String email, String token) throws MailException {
-			
-		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setFrom("seemabaghel1997@gmail.com");
+	
+		mail.setFrom(Constants.SENDER_EMAIL_ID);
 		mail.setTo(email);
-		mail.setSubject("verify user");
+		mail.setSubject("Verification of user");
 		mail.setText("click here..." + token);
 		mailsender.send(mail);
 	}
 
 	public void sendForgetPasswordMail(String email, String token) throws MailException {
 		
-		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setFrom("seemabaghel1997@gmail.com");
+		mail.setFrom(Constants.SENDER_EMAIL_ID);
 		mail.setTo(email);
 		mail.setSubject("Forget password link");
 		mail.setText("click here..." + token);
