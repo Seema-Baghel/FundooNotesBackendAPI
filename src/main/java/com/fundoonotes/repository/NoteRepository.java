@@ -47,4 +47,6 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 	@Query(value = "select * from note_model where title = :title", nativeQuery = true)
 	List<NoteModel> searchBy(String title);
 
+	@Query(value = "select * from note_model where user_id=:userId and id = :id", nativeQuery = true)
+	List<NoteModel> searchAllNotesByNoteId(long userId, long id);
 }
