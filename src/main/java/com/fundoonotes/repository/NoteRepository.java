@@ -26,7 +26,7 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 	NoteModel findByuserid(long userid);
 
 	@Modifying
-	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id, reminder, reminder_status) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :id)" , nativeQuery = true)
+	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :id)" , nativeQuery = true)
 	public void insertData(String description, LocalDateTime createdDate, String title, LocalDateTime updatedDate, String noteColor, long id);
 
 	@Modifying
@@ -43,5 +43,8 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 	
 	@Query(value = "select * from note_model where user_id = :userId", nativeQuery = true)
 	List<NoteModel> getAll(Long userId);
+	
+	@Query(value = "select * from note_model where title = :title", nativeQuery = true)
+	List<NoteModel> searchBy(String title);
 
 }

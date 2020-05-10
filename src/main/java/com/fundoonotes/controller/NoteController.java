@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,10 +64,22 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Error! note can't be deleted", 400));
 	}
 	
-	@PostMapping("/allnotes")
+	@GetMapping("/allnotes")
 	public ResponseEntity<Response> getAllNotes(@RequestParam("email") String email)  {
 		
 		List<NoteModel> notesList = noteService.getAllNotes(email);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("All notes of user", 200, notesList));
+	}
+	
+	@GetMapping("search")
+	public ResponseEntity<Response> searchByTitle(@RequestHeader("email") String email, @RequestParam("title") String noteTitle) {
+		List<NoteModel> findNotes = noteService.searchByTitle(email, noteTitle);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("found notes", 200, findNotes));
+
+	}
+	
+	@PutMapping("/reminder/{noteId}/{reminder}")
+	public Response setReminder(@PathVariable String reminder, @PathVariable long noteId) throws Exception {
+		return noteService.setReminder(noteId, reminder);
 	}
 }

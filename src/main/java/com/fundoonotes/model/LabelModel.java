@@ -26,12 +26,12 @@ public class LabelModel {
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private UserModel userLabel;
-
+	
 	@ManyToMany(mappedBy = "labels")
-	@JsonIgnore
 	private List<NoteModel> listnote;
-
+	
 	public LabelModel() {
+		
 	}
 
 	public LabelModel(long labelId, @NotBlank String labelTitle) {
@@ -68,7 +68,7 @@ public class LabelModel {
 		return userLabel;
 	}
 
-	public void setUserLabel(UserModel userLabel) {
+	public void setUserLabel(UserModel userLabel){
 		this.userLabel = userLabel;
 	}
 

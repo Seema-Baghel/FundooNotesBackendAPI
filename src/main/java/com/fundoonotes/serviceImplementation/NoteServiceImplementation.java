@@ -1,5 +1,6 @@
 package com.fundoonotes.serviceImplementation;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,6 +115,46 @@ public class NoteServiceImplementation implements NoteService {
 			return notes;
 		}
 		throw new NoteException("No Notes Found");
+	}
+
+	@Override
+	public List<NoteModel> searchByTitle(String email, String noteTitle) {
+		String token = redis.getMap(redisKey, email);
+		long userId = tokenGenerator.parseJwtToken(token);
+		Object isUserAvailable = userRepository.findById(userId);
+		if (isUserAvailable != null) {
+			List<NoteModel> fetchedNotes = noteRepository.searchBy(noteTitle);
+			if (!fetchedNotes.isEmpty()) {
+				return fetchedNotes;
+			}
+			throw new NoteException("No note Found");
+		}
+		throw new NoteException("No user Found");
+	}
+
+	@Override
+	public Response setReminder(long noteId, String reminder) {
+//		NoteModel note = noteRepository.findById(noteId);
+//		if(note == null)
+//			throw new NoteException("No note found");
+//		String reminders = reminder.toLowerCase();
+//		LocalDate today = LocalDate.now();
+//		LocalDate tomorrow = today.plusDays(1);
+//		LocalDate nextWeek = today.plusWeeks(1);
+//		switch(reminder) {
+//			case "today": note.getId().setReminder(today);
+//						  noteRepository.save(note.getId());
+//						  return new Response("Reminder set for today",200);
+//			case "tomorrow": note.getId().setReminder(tomorrow);
+//			  			  noteRepository.save(note.getId());
+//			  			  return new Response("Reminder set for tomorrow",200);
+//			case "nextWeek": note.getId().setReminder(nextWeek);
+//			  				 noteRepository.save(note.getId());
+//			  				 return new Response("Reminder set for nextWeek",200);
+//			 default: return new Response("Error! enater a valid Reminder",400);
+//		}
+		throw new NoteException("No user Found");
+		
 	}
 	
 }

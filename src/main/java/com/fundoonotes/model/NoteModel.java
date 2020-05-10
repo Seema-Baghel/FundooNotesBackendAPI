@@ -1,5 +1,6 @@
 package com.fundoonotes.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class NoteModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	@Column(name = "note_id")
 	private long id;
 	
 	@Column(length = 200)
@@ -39,17 +39,13 @@ public class NoteModel {
 	@Column(length = 30)
 	private LocalDateTime updatedDate;
 	
+	private LocalDate reminder;
+	
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private UserModel createdBy;
 	
-//	private String reminder;
-//
-//	@Column(columnDefinition = "boolean default false")
-//	private boolean reminderStatus;
-	
 	@ManyToMany
-	@JsonIgnore
 	private List<LabelModel> labels;
 	
 	public NoteModel() {
@@ -111,6 +107,14 @@ public class NoteModel {
 		this.updatedDate = LocalDateTime.now();
 	}
 
+	public LocalDate getReminder() {
+		return reminder;
+	}
+
+	public void setReminder(LocalDate reminder) {
+		this.reminder = reminder;
+	}
+
 	public UserModel getCreatedBy() {
 		return createdBy;
 	}
@@ -119,19 +123,12 @@ public class NoteModel {
 		this.createdBy = createdBy;
 	}
 
-//	public String getReminder() {
-//		return reminder;
-//	}
-//
-//	public void setReminder(String time) {
-//		this.reminder = time;
-//	}
-//
-//	public boolean getReminderStatus() {
-//		return reminderStatus;
-//	}
-//
-//	public void setReminderStatus(boolean reminderStatus) {
-//		this.reminderStatus = reminderStatus;
-//	}
+	public List<LabelModel> getLabels() {
+		return labels;
+	}
+
+	public void setLabels(List<LabelModel> labels) {
+		this.labels = labels;
+	}
+
 }
