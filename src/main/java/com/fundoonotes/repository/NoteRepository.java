@@ -2,6 +2,7 @@ package com.fundoonotes.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +17,9 @@ import com.fundoonotes.model.NoteModel;
 @Transactional
 public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 
+	@Query(value = "select * from note_model where id = :id", nativeQuery = true)
+	Optional<NoteModel> findBynoteId(long id);
+	
 	@Query(value = "select * from note_model where id = :id", nativeQuery = true)
 	NoteModel findById(long id);
 

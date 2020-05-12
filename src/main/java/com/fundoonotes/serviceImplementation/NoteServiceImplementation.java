@@ -6,11 +6,8 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import com.fundoonotes.dto.NoteDto;
 import com.fundoonotes.exception.NoteException;
 import com.fundoonotes.model.NoteModel;
@@ -20,7 +17,6 @@ import com.fundoonotes.repository.UserRepository;
 import com.fundoonotes.responses.Response;
 import com.fundoonotes.service.NoteService;
 import com.fundoonotes.utility.Jwt;
-import com.fundoonotes.utility.RedisTempl;
 
 @Service
 public class NoteServiceImplementation implements NoteService {
@@ -35,16 +31,10 @@ public class NoteServiceImplementation implements NoteService {
 	private NoteRepository noteRepository;
 
 	@Autowired
-	private RedisTempl redis;
-
-	@Autowired
-	private RestTemplate restTemplate;
-
-	private String redisKey = "Key";
-
+	private Environment environment;
+	
 	@Override
 	public NoteModel createNote(NoteDto noteDto , String token) {
-//		String token = redis.getMap(redisKey, email);
 		long id = tokenGenerator.parseJwtToken(token);
 		UserModel user = userRepository.findById(id);
 		if (user != null) {
@@ -62,11 +52,9 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Override
 	public boolean updateNote(NoteDto noteDto, long noteId, String token) {
-//		String token = redis.getMap(redisKey, email);
 		long id = tokenGenerator.parseJwtToken(token);
 		UserModel user = userRepository.findById(id);
 		if (user != null) {
-			ModelMapper mapper = new ModelMapper();
 			NoteModel note = noteRepository.findById(noteId);
 			note.setDescription(noteDto.getDescription());
 			note.setTitle(noteDto.getTitle());
@@ -79,7 +67,6 @@ public class NoteServiceImplementation implements NoteService {
 	
 	@Override
 	public boolean addColor(String token, long id, String color) {
-//		String token = redis.getMap(redisKey, email);
 		long userid = tokenGenerator.parseJwtToken(token);
 		UserModel isUserAvailable = userRepository.findById(userid);
 		if (isUserAvailable != null) {
@@ -95,7 +82,6 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Override
 	public boolean deleteNote(String token, long id) {
-//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel note = userRepository.findById(userId);
 		if (note != null){		
@@ -107,7 +93,6 @@ public class NoteServiceImplementation implements NoteService {
 	
 	@Override
 	public List<NoteModel> getAllNotes(String token) {
-//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		Object isUserAvailable = userRepository.findById(userId);
 		if (isUserAvailable != null) {
@@ -119,7 +104,6 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Override
 	public List<NoteModel> searchByTitle(String token, String noteTitle) {
-//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		Object isUserAvailable = userRepository.findById(userId);
 		if (isUserAvailable != null) {
@@ -134,27 +118,31 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Override
 	public Response setReminder(long noteId, String reminder) {
-//		NoteModel note = noteRepository.findById(noteId);
-//		if(note == null)
-//			throw new NoteException("No note found");
-//		String reminders = reminder.toLowerCase();
-//		LocalDate today = LocalDate.now();
-//		LocalDate tomorrow = today.plusDays(1);
-//		LocalDate nextWeek = today.plusWeeks(1);
-//		switch(reminder) {
-//			case "today": note.getId().setReminder(today);
-//						  noteRepository.save(note.getId());
-//						  return new Response("Reminder set for today",200);
-//			case "tomorrow": note.getId().setReminder(tomorrow);
-//			  			  noteRepository.save(note.getId());
-//			  			  return new Response("Reminder set for tomorrow",200);
-//			case "nextWeek": note.getId().setReminder(nextWeek);
-//			  				 noteRepository.save(note.getId());
-//			  				 return new Response("Reminder set for nextWeek",200);
-//			 default: return new Response("Error! enater a valid Reminder",400);
-//		}
-		throw new NoteException("No user Found");
-		
+		Optional<NoteModel> note = noteRepository.findBynoteId(noteId);
+		note.orElseThrow(() -> new NoteException(environment.getProperty("Note doesn't exit")));
+		String remender = reminder.toLowerCase();
+		LocalDate today = LocalDate.now();
+		LocalDate tomorrow = today.plusDays(1);
+		LocalDate nextWeek = today.plusWeeks(1);
+		String[] reminderOptions = { "today", "tomorrow", "nextweek" };
+		for (@SuppressWarnings("unused")
+		String string : reminderOptions) {
+			if (remender.equals("today")) {
+				note.get().setReminder(today);
+				noteRepository.save(note.get());
+				return new Response("Reminder set for today",200);
+			} else if (remender.equals("tomorrow")) {
+				note.get().setReminder(tomorrow);
+				noteRepository.save(note.get());
+				return new Response("Reminder set for tomorrow",200);
+			} else if (remender.equals("nextweek")) {
+				note.get().setReminder(nextWeek);
+				noteRepository.save(note.get());
+				return new Response("Reminder set for next week",200);
+			} else {
+				throw new NoteException("please enter valid reminder day- { Today, Tomorrow, NextWeek }");
+			}
+		}
+		return new Response(environment.getProperty("status.note.remError"), 500, reminderOptions);
 	}
-	
 }
