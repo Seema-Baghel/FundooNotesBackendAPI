@@ -45,8 +45,8 @@ public class LabelServiceImplementation implements LabelService {
 	private String redisKey = "Key";
 
 	@Override
-	public int createLabel(LabelDto labeldto, String email) {
-		String token = redis.getMap(redisKey, email);
+	public int createLabel(LabelDto labeldto, String token) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel isUserAvailable = userrepository.findById(userId);
 		if(isUserAvailable != null){
@@ -60,8 +60,8 @@ public class LabelServiceImplementation implements LabelService {
 	}
 
 	@Override
-	public boolean updateLabel(LabelDto labeldto, String email, long labelId) {
-		String token = redis.getMap(redisKey, email);
+	public boolean updateLabel(LabelDto labeldto, String token, long labelId) {
+//		String token = redis.getMap(redisKey, email);
 		long id = tokenGenerator.parseJwtToken(token);
 		UserModel user = userrepository.findById(id);
 		if (user != null) {
@@ -74,8 +74,8 @@ public class LabelServiceImplementation implements LabelService {
 	}
 
 	@Override
-	public boolean deleteLabel(String email, long labelId) {
-		String token = redis.getMap(redisKey, email);
+	public boolean deleteLabel(String token, long labelId) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel label = userrepository.findById(userId);
 		if (label != null){		
@@ -86,8 +86,8 @@ public class LabelServiceImplementation implements LabelService {
 	}
 
 	@Override
-	public List<LabelModel> getAllLabel(String email) {
-		String token = redis.getMap(redisKey, email);
+	public List<LabelModel> getAllLabel(String token) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel user = userrepository.findById(userId);
 		if(user != null){
@@ -98,8 +98,8 @@ public class LabelServiceImplementation implements LabelService {
 	}
 
 	@Override
-	public LabelModel mapToNote(LabelDto labeldto, long noteid, String email) {
-		String token = redis.getMap(redisKey, email);
+	public LabelModel mapToNote(LabelDto labeldto, long noteid, String token) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel isUserAvailable = userrepository.findById(userId);
 		if(isUserAvailable != null){
@@ -127,8 +127,8 @@ public class LabelServiceImplementation implements LabelService {
 	}
 
 	@Override
-	public LabelModel addLabelsToNote(String email, long labelid, long noteid) {
-		String token = redis.getMap(redisKey, email);
+	public LabelModel addLabelsToNote(String token, long labelid, long noteid) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel user = userrepository.findById(userId);
 		if(user != null){

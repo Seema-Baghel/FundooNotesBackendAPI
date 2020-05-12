@@ -28,52 +28,91 @@ public class LabelController {
 	@Autowired
 	private LabelService labelService;
 		
+	/*
+	 * API to add label
+	 * 
+	 * @header token
+	 */
+	
 	@PostMapping("/addlabel")
-	public ResponseEntity<Response> createLabel(@RequestBody LabelDto labeldto, @RequestHeader("email") String email) {
-		int result = labelService.createLabel(labeldto, email);
+	public ResponseEntity<Response> createLabel(@RequestBody LabelDto labeldto, @RequestHeader("token") String token) {
+		int result = labelService.createLabel(labeldto, token);
 		if (result != 0)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Label is Created", 200));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Already exist in label ", 400));
 	}
+	
+	/*
+	 * API to update label
+	 * 
+	 * @header token
+	 * @param labelid
+	 */
 
 	@PutMapping("/updatelabel")
-	public ResponseEntity<Response> updateLabel(@RequestBody LabelDto labeldto, @RequestHeader("email") String email, @RequestParam("labelId") long labelId){
+	public ResponseEntity<Response> updateLabel(@RequestBody LabelDto labeldto,@RequestHeader("token") String token, @RequestParam("labelId") long labelId){
 		
-		boolean result = labelService.updateLabel(labeldto, email, labelId);
+		boolean result = labelService.updateLabel(labeldto, token, labelId);
 		if(result)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Label is updated", 200));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Error! label is not updated", 400));
 	}
 
+	/*
+	 * API to delete label
+	 * 
+	 * @header token
+	 * @param labelid
+	 */
+	
 	@DeleteMapping("/deletelabel")
-	public ResponseEntity<Response> deleteLabel(@RequestParam("email") String email, @RequestHeader("labelId") long labelId){
+	public ResponseEntity<Response> deleteLabel(@RequestHeader("token") String token, @RequestHeader("labelId") long labelId){
 
-		boolean result = labelService.deleteLabel(email, labelId);
+		boolean result = labelService.deleteLabel(token, labelId);
 		if(result)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Label is deleted", 200));
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("Error! label is not deleted", 400));
 	}
+	
+	/*
+	 * API to get all label
+	 */
 		
 	@GetMapping("/alllabel")
-	public ResponseEntity<Response> getAllLabel(@RequestHeader("email") String email){
-		List<LabelModel> labelList = labelService.getAllLabel(email);
+	public ResponseEntity<Response> getAllLabel(@RequestHeader("token") String token){
+		List<LabelModel> labelList = labelService.getAllLabel(token);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("All labels of user",200, labelList));
 	}
 	
-	@PutMapping("/maptonote")
-	public ResponseEntity<Response> mapToNote(@RequestBody LabelDto labeldto,@RequestHeader("email") String email,
+	/*
+	 * API to map label to note
+	 * 
+	 * @header token
+	 * @param labelid
+	 * @param noteid
+	 */
+	
+	@PostMapping("/maptonote")
+	public ResponseEntity<Response> mapToNote(@RequestBody LabelDto labeldto,@RequestHeader("token") String token,
 											  @RequestParam("noteid") long noteid){
-		LabelModel result = labelService.mapToNote(labeldto, noteid, email);
+		LabelModel result = labelService.mapToNote(labeldto, noteid, token);
 		if(result != null)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Label is mapped to note", 200));
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("The label you are trying to map is already exist!!!", 400));
-
 	}
 
+	/*
+	 * API to add some note to a label
+	 * 
+	 * @header token
+	 * @param labelid
+	 * @param noteid
+	 */
+	
 	@PutMapping("/addLabelsToNote")
-	public ResponseEntity<Response> addLabels(@RequestHeader("email") String email, @RequestParam("labelId") long labelId,
+	public ResponseEntity<Response> addLabels(@RequestHeader("token") String token, @RequestParam("labelId") long labelId,
 											  @RequestParam("noteid") long noteId){
-		LabelModel result = labelService.addLabelsToNote(email, labelId, noteId);
+		LabelModel result = labelService.addLabelsToNote(token, labelId, noteId);
 		if(result != null)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("label added", 200));
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("Something went wrong", 400));

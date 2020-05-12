@@ -74,6 +74,7 @@ public class UserServiceImplementation implements UserService {
 		if (bCryptPasswordEncoder.matches(logindto.getPassword(),usermodel.getPassword())) {
 			
 			String token = tokenGenerator.createToken(usermodel.getId());
+			System.out.println("generated token : " + token);
 			redis.putMap(redisKey, usermodel.getEmail(), token);
 			return usermodel;
 		}

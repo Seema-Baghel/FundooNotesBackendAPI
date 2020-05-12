@@ -30,53 +30,90 @@ public class NoteController {
 	@Autowired
 	private NoteService noteService;
 
+	/*
+	 * API to create notes
+	 */
+	
 	@PostMapping("/create")
-	private ResponseEntity<Response> createNote(@RequestBody NoteDto notedto, @RequestParam String email)throws NoteException{
+	private ResponseEntity<Response> createNote(@RequestBody NoteDto notedto, @RequestHeader("token") String token)throws NoteException{
 
-		NoteModel note = noteService.createNote(notedto, email);
+		NoteModel note = noteService.createNote(notedto, token);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("Note is created successfully",200));
 	}
 
+	/*
+	 * API to update notes
+	 * 
+	 * @param noteid
+	 * @header token
+	 */
+	
 	@PostMapping("/updatenote")
-	public ResponseEntity<Response> updateNote(@RequestBody NoteDto notedto, @RequestParam("id") long id, @RequestParam("email") String email) {
-		boolean result = noteService.updateNote(notedto, id, email);
+	public ResponseEntity<Response> updateNote(@RequestBody NoteDto notedto, @RequestParam("id") long id, @RequestHeader("token") String token) {
+		boolean result = noteService.updateNote(notedto, id, token);
 		if (result) 
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Note is update successfully", 200));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Something went wrong", 400));
-		
 	}
+	
+	/*
+	 * API to add color to notes
+	 * 
+	 * @param color
+	 * @param noteid
+	 * @header token
+	 */
 
 	@PutMapping("/addcolor")
-	public ResponseEntity<Response> addColor(@RequestParam("email") String email, @RequestParam("id") long id, @RequestParam("color") String color)
+	public ResponseEntity<Response> addColor(@RequestHeader("token") String token, @RequestParam("id") long id, @RequestParam("color") String color)
 	{
-		boolean result = noteService.addColor(email, id, color);
+		boolean result = noteService.addColor(token, id, color);
 		if(result)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Color is added", 200));
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("Error! color is not added", 400));
 	}
 	
+	/*
+	 * API to delete notes permanently
+	 * 
+	 * @param noteid
+	 * @header token
+	 */
+	
 	@DeleteMapping("/delete")
-	public ResponseEntity<Response> deleteNote(@RequestParam("email") String email, @RequestParam("id") long id){
+	public ResponseEntity<Response> deleteNote(@RequestHeader("token") String token, @RequestParam("id") long id){
 
-		boolean result = noteService.deleteNote(email, id);
+		boolean result = noteService.deleteNote(token, id);
 		if (result)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Deleted Succussfully", 200));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Error! note can't be deleted", 400));
 	}
 	
+	/*
+	 * API to get all notes
+	 */
+	
 	@GetMapping("/allnotes")
-	public ResponseEntity<Response> getAllNotes(@RequestParam("email") String email)  {
+	public ResponseEntity<Response> getAllNotes(@RequestHeader("token") String token)  {
 		
-		List<NoteModel> notesList = noteService.getAllNotes(email);
+		List<NoteModel> notesList = noteService.getAllNotes(token);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("All notes of user", 200, notesList));
 	}
 	
+	/*
+	 * API to search notes by its title
+	 */
+	
 	@GetMapping("search")
-	public ResponseEntity<Response> searchByTitle(@RequestHeader("email") String email, @RequestParam("title") String noteTitle) {
-		List<NoteModel> findNotes = noteService.searchByTitle(email, noteTitle);
+	public ResponseEntity<Response> searchByTitle(@RequestHeader("token") String token, @RequestParam("title") String noteTitle) {
+		List<NoteModel> findNotes = noteService.searchByTitle(token, noteTitle);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("found notes", 200, findNotes));
 
 	}
+	
+	/*
+	 * API to set reminder to notes
+	 */
 	
 	@PutMapping("/reminder/{noteId}/{reminder}")
 	public Response setReminder(@PathVariable String reminder, @PathVariable long noteId) throws Exception {

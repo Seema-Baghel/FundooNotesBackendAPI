@@ -13,17 +13,17 @@ import com.fundoonotes.responses.Response;
 @Component
 public interface NoteService {
 
-	public NoteModel createNote(NoteDto noteDto, String email);
+	public NoteModel createNote(NoteDto noteDto, String token);
 	
-	public boolean updateNote(NoteDto noteDto, long noteId, String email);
+	public boolean updateNote(NoteDto noteDto, long noteId, String token);
 
-	public boolean addColor(String email, long noteId, String noteColor);
+	public boolean addColor(String token, long noteId, String noteColor);
 	
-	public boolean deleteNote(String email, long noteId);
+	public boolean deleteNote(String token, long noteId);
 
-	public List<NoteModel> getAllNotes(String email);
+	public List<NoteModel> getAllNotes(String token);
 
-	public List<NoteModel> searchByTitle(String email, String noteTitle);
+	public List<NoteModel> searchByTitle(String token, String noteTitle);
 
 	public Response setReminder(long noteId, String reminder);
 

@@ -11,15 +11,15 @@ import com.fundoonotes.model.LabelModel;
 @Component
 public interface LabelService {
 
-	int createLabel(LabelDto labeldto, String email);
+	int createLabel(LabelDto labeldto, String token);
 
-	boolean updateLabel(LabelDto labeldto, String email, long labelId);
+	boolean updateLabel(LabelDto labeldto, String token, long labelId);
 
-	boolean deleteLabel(String email, long labelId);
+	boolean deleteLabel(String token, long labelId);
 
-	List<LabelModel> getAllLabel(String email);
+	List<LabelModel> getAllLabel(String token);
 
-	LabelModel mapToNote(LabelDto labeldto, long noteid, String email);
+	LabelModel mapToNote(LabelDto labeldto, long noteid, String token);
 
 	LabelModel addLabelsToNote(String token, long labelid, long noteid);
 }

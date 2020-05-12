@@ -43,8 +43,8 @@ public class NoteServiceImplementation implements NoteService {
 	private String redisKey = "Key";
 
 	@Override
-	public NoteModel createNote(NoteDto noteDto , String email) {
-		String token = redis.getMap(redisKey, email);
+	public NoteModel createNote(NoteDto noteDto , String token) {
+//		String token = redis.getMap(redisKey, email);
 		long id = tokenGenerator.parseJwtToken(token);
 		UserModel user = userRepository.findById(id);
 		if (user != null) {
@@ -61,8 +61,8 @@ public class NoteServiceImplementation implements NoteService {
 	}
 
 	@Override
-	public boolean updateNote(NoteDto noteDto, long noteId, String email) {
-		String token = redis.getMap(redisKey, email);
+	public boolean updateNote(NoteDto noteDto, long noteId, String token) {
+//		String token = redis.getMap(redisKey, email);
 		long id = tokenGenerator.parseJwtToken(token);
 		UserModel user = userRepository.findById(id);
 		if (user != null) {
@@ -78,8 +78,8 @@ public class NoteServiceImplementation implements NoteService {
 	}
 	
 	@Override
-	public boolean addColor(String email, long id, String color) {
-		String token = redis.getMap(redisKey, email);
+	public boolean addColor(String token, long id, String color) {
+//		String token = redis.getMap(redisKey, email);
 		long userid = tokenGenerator.parseJwtToken(token);
 		UserModel isUserAvailable = userRepository.findById(userid);
 		if (isUserAvailable != null) {
@@ -94,8 +94,8 @@ public class NoteServiceImplementation implements NoteService {
 	}
 
 	@Override
-	public boolean deleteNote(String email, long id) {
-		String token = redis.getMap(redisKey, email);
+	public boolean deleteNote(String token, long id) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		UserModel note = userRepository.findById(userId);
 		if (note != null){		
@@ -106,8 +106,8 @@ public class NoteServiceImplementation implements NoteService {
 	}
 	
 	@Override
-	public List<NoteModel> getAllNotes(String email) {
-		String token = redis.getMap(redisKey, email);
+	public List<NoteModel> getAllNotes(String token) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		Object isUserAvailable = userRepository.findById(userId);
 		if (isUserAvailable != null) {
@@ -118,8 +118,8 @@ public class NoteServiceImplementation implements NoteService {
 	}
 
 	@Override
-	public List<NoteModel> searchByTitle(String email, String noteTitle) {
-		String token = redis.getMap(redisKey, email);
+	public List<NoteModel> searchByTitle(String token, String noteTitle) {
+//		String token = redis.getMap(redisKey, email);
 		long userId = tokenGenerator.parseJwtToken(token);
 		Object isUserAvailable = userRepository.findById(userId);
 		if (isUserAvailable != null) {
