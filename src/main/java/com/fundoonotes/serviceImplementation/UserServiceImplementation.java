@@ -1,5 +1,7 @@
 package com.fundoonotes.serviceImplementation;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,9 @@ public class UserServiceImplementation implements UserService {
 	 private RedisTempl<Object> redis;
 
 	 private String redisKey = "Key";
-	 Date date = new Date();
+	 
+	 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+ 	 String date = dateFormat.format(new Date()).toString();
 	 
 	 @Override
 	 public UserModel register(UserDto userdto) throws UserDetailsNullException {

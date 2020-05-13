@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,19 +36,29 @@ public class NoteModel {
 	private String NoteColor;
 	
 	@Column(length = 30)
-	private LocalDateTime createdDate;
+	private String createdDate;
 	
 	@Column(length = 30)
-	private LocalDateTime updatedDate;
+	private String updatedDate;
 	
 	private LocalDate reminder;
 	
-	@ManyToOne
-	@JoinColumn(name = "userId")
+	@Column(name = "userId")
 	private UserModel createdBy;
 	
-	@ManyToMany
-	private List<LabelModel> labels;
+//	@OneToMany
+//	@JoinColumn(name = "labelName")
+//	private LabelModel label;
+//	
+//	@OneToMany
+//	@JoinColumn(name = "Collaborator")
+//	private CollaboratorModel collaborate;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<LabelModel> labelName;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<UserModel> collaborator;
 	
 	public NoteModel() {
 		
@@ -90,21 +102,20 @@ public class NoteModel {
 		NoteColor = noteColor;
 	}
 
-	public LocalDateTime getCreatedDate() {
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate() {
-		setUpdatedDate();
-		this.createdDate = LocalDateTime.now();
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
 
-	public LocalDateTime getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate() {
-		this.updatedDate = LocalDateTime.now();
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 	public LocalDate getReminder() {
@@ -123,12 +134,39 @@ public class NoteModel {
 		this.createdBy = createdBy;
 	}
 
-	public List<LabelModel> getLabels() {
-		return labels;
+	public List<LabelModel> getLabelName() {
+		return labelName;
 	}
 
-	public void setLabels(List<LabelModel> labels) {
-		this.labels = labels;
+	public void setLabelName(List<LabelModel> labelName) {
+		this.labelName = labelName;
 	}
+
+	public List<UserModel> getCollaborator() {
+		return collaborator;
+	}
+
+	public void setCollaborator(List<UserModel> collaborator) {
+		this.collaborator = collaborator;
+	}
+	
+	
+//	public LabelModel getLabel() {
+//		return label;
+//	}
+//
+//	public void setLabel(LabelModel label) {
+//		this.label = label;
+//	}
+//
+//	public CollaboratorModel getCollaborate() {
+//		return collaborate;
+//	}
+//
+//	public void setCollaborate(CollaboratorModel collaborate) {
+//		this.collaborate = collaborate;
+//	}
+
+	
 
 }

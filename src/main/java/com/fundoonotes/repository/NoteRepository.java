@@ -11,7 +11,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.fundoonotes.model.LabelModel;
 import com.fundoonotes.model.NoteModel;
+import com.fundoonotes.model.UserModel;
 
 @Repository
 @Transactional
@@ -30,12 +32,12 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 	NoteModel findByuserid(long userid);
 
 	@Modifying
-	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :id)" , nativeQuery = true)
-	public void insertData(String description, LocalDateTime createdDate, String title, LocalDateTime updatedDate, String noteColor, long id);
+	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id, label_name, collaboratoe_id) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :id, :labelName, :id)" , nativeQuery = true)
+	public void insertData(String description, String createdDate, String title, String updatedDate, String noteColor, long id, List<LabelModel> labelName, List<UserModel> id2);
 
 	@Modifying
 	@Query(value = "update note_model set description = :description , title = :title , updated_date = :updatedDate where user_id = :id AND id = :id2", nativeQuery = true)
-	void updateData(String description, String title, LocalDateTime updatedDate, long id, long id2);
+	void updateData(String description, String title, String updatedDate, long id, long id2);
 
 	@Modifying
 	@Query(value = "update note_model set note_color = :color where user_id = :userid and id = :id", nativeQuery = true)

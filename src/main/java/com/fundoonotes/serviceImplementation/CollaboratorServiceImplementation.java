@@ -3,22 +3,21 @@ package com.fundoonotes.serviceImplementation;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fundoonotes.dto.CollaboratorDto;
 import com.fundoonotes.exception.CollaboratorException;
-import com.fundoonotes.exception.NoteException;
 import com.fundoonotes.model.CollaboratorModel;
 import com.fundoonotes.model.NoteModel;
 import com.fundoonotes.model.UserModel;
 import com.fundoonotes.repository.CollaboratorRepository;
 import com.fundoonotes.repository.NoteRepository;
 import com.fundoonotes.repository.UserRepository;
+import com.fundoonotes.responses.EmailObject;
 import com.fundoonotes.service.CollaboratorService;
 import com.fundoonotes.utility.Jwt;
+import com.fundoonotes.utility.RabbitMQSender;
 import com.fundoonotes.utility.RedisTempl;
 
 @Service
@@ -40,27 +39,25 @@ public class CollaboratorServiceImplementation implements CollaboratorService {
 	private RedisTempl redis;
 
 	@Autowired
+	private RabbitMQSender rabbitMQSender;
+	
+	@Autowired
 	private RestTemplate restTemplate;
 
 	private String redisKey = "Key";
 	
 	@Override
-	public CollaboratorModel addCollaborator(CollaboratorDto collaboratorDto, String email, long noteId) {
-		String token = redis.getMap(redisKey, email);
-		long userId = jwtGenerator.parseJwtToken(token);
-		UserModel user = userRepository.findById(userId);
-		if (user != null) {
-			CollaboratorModel collaborator = new CollaboratorModel();
-			collaborator.setEmail(collaboratorDto.getEmail());
+	public CollaboratorModel addCollaborator(String email, long noteId) {
+		
 			NoteModel note = noteRepository.findById(noteId);
-			CollaboratorModel collaboratorDB = collaboratorRepository.findOneByEmail(collaboratorDto.getEmail(),noteId);
+			CollaboratorModel collaboratorDB = collaboratorRepository.findOneByEmail(email,noteId);
 			if (note != null && collaboratorDB == null) {
-				BeanUtils.copyProperties(collaboratorDto, collaborator);
-				collaborator.setNote(note);
-				collaboratorRepository.addCollaborator(collaborator.getId(), collaborator.getEmail(), noteId);
-				return collaborator;
+				collaboratorDB.setEmail(email);
+				collaboratorDB.setNote(note);
+				collaboratorRepository.addCollaborator(collaboratorDB.getEmail(),noteId);
+				rabbitMQSender.send(new EmailObject(email,"Click the Link...","Colaboration done!"));
+				return collaboratorDB;
 			}
-		}
 		throw new CollaboratorException("No user Found");
 	}
 

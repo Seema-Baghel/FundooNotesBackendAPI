@@ -1,5 +1,6 @@
 package com.fundoonotes.repository;
 
+import java.text.DateFormat;
 import java.util.Date;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,13 +25,13 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 
 	@Modifying
 	@Query(value="Insert into user_model(fname,lname,email,password,is_verified, created_at,modified_time) values (:fname,:lname,:email,:password,:isVerified,:createdAt,:modifiedTime)",nativeQuery = true)
-	void insertdata(String fname, String lname, String email, String password ,boolean isVerified, Date createdAt, Date modifiedTime);
+	void insertdata(String fname, String lname, String email, String password ,boolean isVerified, String createdAt, String modifiedTime);
 
 	@Modifying
 	@Query(value="update user_model set is_verified = true where id = :id", nativeQuery = true)
 	void verify(long id);
 
 	@Modifying
-	@Query(value="update user_model set modified_time = now()  where id = :id", nativeQuery = true)
+	@Query(value="update user_model set modified_time = DATE_FORMAT(NOW(), '%d/%m/%Y %r') where id = :id", nativeQuery = true)
 	void modifiedTime(long id);
 }

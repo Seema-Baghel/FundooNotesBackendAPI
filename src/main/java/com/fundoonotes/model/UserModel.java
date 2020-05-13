@@ -38,19 +38,15 @@ public class UserModel {
       private boolean isVerified;
       
       @Column(name = "created_at")
-  	  public Date createdAt;
+  	  public String createdAt;
 
   	  @Column(name = "modified_time")
-  	  public Date modifiedTime;
-  	  
-//  	  @OneToMany(cascade = CascadeType.ALL)
-//  	  @JoinColumn(name = "userId")
-//  	  private List<NoteModel> notes;
+  	  public String modifiedTime;
   	  
       public UserModel(){
       }
       
-	  public UserModel(long id, @NotNull String fname, @NotNull String lname, @NotNull String email, @NotNull String password, @NotNull boolean isVerified, Date createdAt, Date modifiedTime) {
+	  public UserModel(long id, @NotNull String fname, @NotNull String lname, @NotNull String email, @NotNull String password, @NotNull boolean isVerified, String createdAt, String modifiedTime) {
 		
 		super();
 		this.id = id;
@@ -120,28 +116,20 @@ public class UserModel {
 		this.isVerified = isVerified;
 	}
 
-	public Date getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getModifiedTime() {
+	public String getModifiedTime() {
 		return modifiedTime;
 	}
 
-	public void setModifiedTime(Date modifiedTime) {
+	public void setModifiedTime(String modifiedTime) {
 		this.modifiedTime = modifiedTime;
 	}
 
-//	public List<NoteModel> getNotes() {
-//		return notes;
-//	}
-//
-//	public void setNotes(List<NoteModel> notes) {
-//		this.notes = notes;
-//	}
-	
 }

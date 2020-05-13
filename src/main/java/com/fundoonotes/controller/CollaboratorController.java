@@ -1,6 +1,7 @@
 package com.fundoonotes.controller;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fundoonotes.dto.CollaboratorDto;
 import com.fundoonotes.model.CollaboratorModel;
 import com.fundoonotes.responses.Response;
 import com.fundoonotes.service.CollaboratorService;
@@ -26,16 +26,29 @@ public class CollaboratorController {
 
 	@Autowired
 	private CollaboratorService collaboratorService;
+	
+	/*
+	 * API to add a collaborator
+	 * 
+	 * @param collaborator email
+	 * @param noteId
+	 */
 
 	@PostMapping("/addCollaborator")
 	private ResponseEntity<Response> addCollaborator(@RequestParam("email") String email, @RequestParam("noteId") long noteId) {
-		CollaboratorDto collaboratorDto=new CollaboratorDto();
-		collaboratorDto.setEmail(email);
-		CollaboratorModel result = collaboratorService.addCollaborator(collaboratorDto, email, noteId);
+		CollaboratorModel result = collaboratorService.addCollaborator(email, noteId);
 		if(result != null)
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Added collabrator sucessfully!!!",200, result));
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Sorry! No collaborator added", 400));
 	}
+	
+	/*
+	 * API to delete collaborator
+	 * 
+	 * @header collaborator email
+	 * @param noteId
+	 * @param collaboratorid
+	 */
 
 	@DeleteMapping("/deleteCollaborator")
 	public ResponseEntity<Response> deleteCollaborator(@RequestParam(value = "noteId") long noteId, @RequestHeader("email") String email,
@@ -46,9 +59,16 @@ public class CollaboratorController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Sorry! Cannot delete ", 400));
 	}
 
+	/*
+	 * API to get all collaborator
+	 * 
+	 * @header collaborator email
+	 * @param noteId
+	 */
+	
 	@GetMapping("/getAllNoteCollaborator")
 	public ResponseEntity<Response> getAllCollaborator(@RequestParam(value = "noteId") long noteId,
-			@RequestHeader("email") String email) {
+														@RequestHeader("email") String email) {
 		List<CollaboratorModel> collaboratorList = collaboratorService.getNoteCollaborators(email, noteId);
 		if(collaboratorList != null) 
 			return ResponseEntity.status(HttpStatus.CREATED).body(new Response("All note collaborators are", 200, collaboratorList));

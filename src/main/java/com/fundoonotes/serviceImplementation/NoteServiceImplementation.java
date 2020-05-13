@@ -1,6 +1,9 @@
 package com.fundoonotes.serviceImplementation;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +36,10 @@ public class NoteServiceImplementation implements NoteService {
 	@Autowired
 	private Environment environment;
 	
+	 
+	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+	String date = dateFormat.format(new Date()).toString();
+	 
 	@Override
 	public NoteModel createNote(NoteDto noteDto , String token) {
 		long id = tokenGenerator.parseJwtToken(token);
@@ -41,10 +48,10 @@ public class NoteServiceImplementation implements NoteService {
 			ModelMapper mapper = new ModelMapper();
 			NoteModel note =mapper.map(noteDto, NoteModel.class);
 			note.setCreatedBy(user);
-			note.setCreatedDate();
-			note.setUpdatedDate();
+			note.setCreatedDate(date);
+			note.setUpdatedDate(date);
 			noteRepository.insertData(note.getDescription(), note.getCreatedDate(), note.getTitle(), note.getUpdatedDate(),
-					note.getNoteColor(), note.getCreatedBy().getId());
+					note.getNoteColor(), note.getCreatedBy().getId(), note.getLabelName(), note.getCollaborator());
 			return note;
 		}
 		throw new NoteException("Error! No note created");
@@ -58,7 +65,7 @@ public class NoteServiceImplementation implements NoteService {
 			NoteModel note = noteRepository.findById(noteId);
 			note.setDescription(noteDto.getDescription());
 			note.setTitle(noteDto.getTitle());
-			note.setUpdatedDate();
+			note.setUpdatedDate(date);
 			noteRepository.updateData(note.getDescription(), note.getTitle(), note.getUpdatedDate(), id, id);
 			return true;
 		}
@@ -143,6 +150,6 @@ public class NoteServiceImplementation implements NoteService {
 				throw new NoteException("please enter valid reminder day- { Today, Tomorrow, NextWeek }");
 			}
 		}
-		return new Response(environment.getProperty("status.note.remError"), 500, reminderOptions);
+		return new Response(environment.getProperty("No reminder set"), 400, reminderOptions);
 	}
 }

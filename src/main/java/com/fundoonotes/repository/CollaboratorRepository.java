@@ -20,8 +20,8 @@ public interface CollaboratorRepository extends JpaRepository<CollaboratorModel,
 	CollaboratorModel findOneByEmail(String email, long noteId);
 
 	@Modifying
-	@Query(value = "insert into collaborator(id,email,noteid)values(?,?,?)",nativeQuery=true)
-	void addCollaborator(long id,String email,long noteid);
+	@Query(value = "insert into collaborator(email,noteid)values(?,?)",nativeQuery=true)
+	void addCollaborator(String email,long noteid);
 
 	@Query(value = "select * from collaborator where id=?",nativeQuery=true)
 	Optional<CollaboratorModel> findById(long id);
