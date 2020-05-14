@@ -106,9 +106,16 @@ public class NoteController {
 	 * API to search notes by its title
 	 */
 	
-	@GetMapping("search")
+	@GetMapping("/searchByTitle")
 	public ResponseEntity<Response> searchByTitle(@RequestHeader("token") String token, @RequestParam("title") String noteTitle) {
 		List<NoteModel> findNotes = noteService.searchByTitle(token, noteTitle);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("found notes", 200, findNotes));
+
+	}
+	
+	@GetMapping("/searchByDescription")
+	public ResponseEntity<Response> searchByDescription(@RequestHeader("token") String token, @RequestParam("description") String noteDescription) {
+		List<NoteModel> findNotes = noteService.searchByDecription(token, noteDescription);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("found notes", 200, findNotes));
 
 	}

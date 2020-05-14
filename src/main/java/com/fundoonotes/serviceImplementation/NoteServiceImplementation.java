@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,14 +116,35 @@ public class NoteServiceImplementation implements NoteService {
 		long userId = tokenGenerator.parseJwtToken(token);
 		Object isUserAvailable = userRepository.findById(userId);
 		if (isUserAvailable != null) {
-			List<NoteModel> fetchedNotes = noteRepository.searchBy(noteTitle);
-			if (!fetchedNotes.isEmpty()) {
-				return fetchedNotes;
+			List<NoteModel> notes = noteRepository.getAll(userId);
+			if (!notes.isEmpty()) {
+				List<NoteModel> list = notes.stream().filter(note ->
+											note.getTitle().contains(noteTitle))
+											.collect(Collectors.toList());
+				return list;
 			}
 			throw new NoteException("No note Found");
 		}
 		throw new NoteException("No user Found");
 	}
+	
+	@Override
+	public List<NoteModel> searchByDecription(String token, String noteDescription) {
+		long userId = tokenGenerator.parseJwtToken(token);
+		Object isUserAvailable = userRepository.findById(userId);
+		if (isUserAvailable != null) {
+			List<NoteModel> notes = noteRepository.getAll(userId);
+			if (!notes.isEmpty()) {
+				List<NoteModel> list = notes.stream().filter(note ->
+											note.getDescription().contains(noteDescription))
+											.collect(Collectors.toList());
+				return list;
+			}
+			throw new NoteException("No note Found");
+		}
+		throw new NoteException("No user Found");
+	}
+	
 
 	@Override
 	public Response setReminder(long noteId, String reminder) {
@@ -285,5 +308,6 @@ public class NoteServiceImplementation implements NoteService {
 		}
 		throw new NoteException("Sorry! User not found");
 	}
+
 	
 }

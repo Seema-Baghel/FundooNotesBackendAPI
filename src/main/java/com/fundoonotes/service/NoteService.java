@@ -25,6 +25,8 @@ public interface NoteService {
 
 	public List<NoteModel> searchByTitle(String token, String noteTitle);
 
+	public List<NoteModel> searchByDecription(String token, String noteDescription);
+	
 	public Response setReminder(long noteId, String reminder);
 
 	public boolean isPinnedNote(String token, long noteId);
@@ -44,5 +46,7 @@ public interface NoteService {
 	public List<NoteModel> allTrashedNotes(String token);
 
 	public boolean restoreNote(String token, long noteId);
+
+	
 	
 }
