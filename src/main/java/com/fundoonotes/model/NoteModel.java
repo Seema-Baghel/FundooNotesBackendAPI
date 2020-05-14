@@ -43,7 +43,9 @@ public class NoteModel {
 	
 	private LocalDate reminder;
 	
-	@Column(name = "userId")
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "userId")
 	private UserModel createdBy;
 	
 //	@OneToMany
@@ -54,12 +56,13 @@ public class NoteModel {
 //	@JoinColumn(name = "Collaborator")
 //	private CollaboratorModel collaborate;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<LabelModel> labelName;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<UserModel> collaborator;
+	private List<LabelModel> labels;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<CollaboratorModel> collaborator;
+
 	public NoteModel() {
 		
 	}
@@ -69,6 +72,16 @@ public class NoteModel {
 		this.title = title;
 		this.description = description;
 	}
+	public NoteModel(String title, String description, String createdDate, String updatedDate, UserModel createdBy, String notecolor) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.createdBy = createdBy;
+		this.NoteColor = notecolor;
+	}
+	
 	
 	public long getId() {
 		return id;
@@ -134,19 +147,19 @@ public class NoteModel {
 		this.createdBy = createdBy;
 	}
 
-	public List<LabelModel> getLabelName() {
-		return labelName;
+	public List<LabelModel> getLabels() {
+		return labels;
 	}
 
-	public void setLabelName(List<LabelModel> labelName) {
-		this.labelName = labelName;
+	public void setLabels(List<LabelModel> labels) {
+		this.labels = labels;
 	}
 
-	public List<UserModel> getCollaborator() {
+	public List<CollaboratorModel> getCollaborator() {
 		return collaborator;
 	}
 
-	public void setCollaborator(List<UserModel> collaborator) {
+	public void setCollaborator(List<CollaboratorModel> collaborator) {
 		this.collaborator = collaborator;
 	}
 	

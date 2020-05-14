@@ -18,6 +18,9 @@ public interface CollaboratorRepository extends JpaRepository<CollaboratorModel,
 
 	@Query(value = "select * from collaborator where email=? and noteid=?",nativeQuery=true)
 	CollaboratorModel findOneByEmail(String email, long noteId);
+	
+	@Query(value = "select * from collaborator where id=? and noteid=?",nativeQuery=true)
+	CollaboratorModel findById(long id, long noteId);
 
 	@Modifying
 	@Query(value = "insert into collaborator(email,noteid)values(?,?)",nativeQuery=true)
@@ -32,4 +35,11 @@ public interface CollaboratorRepository extends JpaRepository<CollaboratorModel,
 
 	@Query(value = "select * from collaborator where noteid=?", nativeQuery = true)
 	List<CollaboratorModel> getAllNoteCollaborators(long noteId);
+	
+	@Query(value = "select * from note_model_collaborator where collaborator_id= :id and note_model_id= :noteId",nativeQuery=true)
+	Object findOneByCollabIdAndNoteId(long id, long noteId);
+	
+	@Modifying
+	@Query(value = "insert into note_model_collaborator(collaborator_id, note_model_id) values(:id, :noteId)",nativeQuery=true)
+	void insertdatatomap(long id, long noteId);
 }

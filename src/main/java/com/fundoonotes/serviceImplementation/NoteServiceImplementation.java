@@ -51,7 +51,7 @@ public class NoteServiceImplementation implements NoteService {
 			note.setCreatedDate(date);
 			note.setUpdatedDate(date);
 			noteRepository.insertData(note.getDescription(), note.getCreatedDate(), note.getTitle(), note.getUpdatedDate(),
-					note.getNoteColor(), note.getCreatedBy().getId(), note.getLabelName(), note.getCollaborator());
+					note.getNoteColor(), note.getCreatedBy().getId());
 			return note;
 		}
 		throw new NoteException("Error! No note created");

@@ -7,6 +7,7 @@ import com.fundoonotes.dto.ResetPasswordDto;
 import com.fundoonotes.dto.UserDto;
 import com.fundoonotes.exception.UserDetailsNullException;
 import com.fundoonotes.model.UserModel;
+import com.fundoonotes.responses.Response;
 
 @Component
 public interface UserService {
@@ -20,5 +21,7 @@ public interface UserService {
 	UserModel forgetPassword(String email) throws UserDetailsNullException;
 	
 	UserModel resetPassword(ResetPasswordDto resetpassword, String token) throws UserDetailsNullException;
+
+	Response loginOut(String token) throws UserDetailsNullException;
 
 }

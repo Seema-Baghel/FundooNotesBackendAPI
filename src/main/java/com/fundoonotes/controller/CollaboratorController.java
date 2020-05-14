@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,9 +37,28 @@ public class CollaboratorController {
 	private ResponseEntity<Response> addCollaborator(@RequestParam("email") String email, @RequestParam("noteId") long noteId) {
 		CollaboratorModel result = collaboratorService.addCollaborator(email, noteId);
 		if(result != null)
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Added collabrator sucessfully!!!",200, result));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response("Added collabrator sucessfully!!!",200));
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Sorry! No collaborator added", 400));
 	}
+	
+	/*
+	 * API to map a collaborator note
+	 * 
+	 * @header token
+	 * @param collaborator id
+	 * @param noteId
+	 */
+	
+	@PostMapping("/mapCollaborator")
+    public ResponseEntity<Response> mapCollaboratorToNote(@RequestHeader("token") String token,
+            @RequestParam("collaboratorid") long collaboratorid, @RequestParam("noteid") long noteid) {
+		CollaboratorModel result = collaboratorService.mapCollaboratorToNote(token, collaboratorid, noteid);
+        if (result != null)
+            return ResponseEntity.status(HttpStatus.OK).body(new Response("collaborator added", 200));
+        return ResponseEntity.status(HttpStatus.OK).body(new Response("Something went wrong", 400));
+    }
+
+	
 	
 	/*
 	 * API to delete collaborator

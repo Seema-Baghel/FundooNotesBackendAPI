@@ -9,10 +9,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "collaborator")
 public class CollaboratorModel {
 
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -20,11 +23,12 @@ public class CollaboratorModel {
 	@NotNull
 	private String email;
 
+	@JsonIgnore
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "noteID")
 	private NoteModel note ;
-
+	
 	public CollaboratorModel() {
 		super();
 	}
@@ -64,4 +68,14 @@ public class CollaboratorModel {
 	public void setNote(NoteModel note) {
 		this.note = note;
 	}
+
+//	public List<NoteModel> getListcollaborator() {
+//		return listcollaborator;
+//	}
+//
+//	public void setListcollaborator(List<NoteModel> listcollaborator) {
+//		this.listcollaborator = listcollaborator;
+//	}
+	
+	
 }

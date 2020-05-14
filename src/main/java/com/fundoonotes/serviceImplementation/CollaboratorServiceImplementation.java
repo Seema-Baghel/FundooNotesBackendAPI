@@ -50,17 +50,42 @@ public class CollaboratorServiceImplementation implements CollaboratorService {
 	public CollaboratorModel addCollaborator(String email, long noteId) {
 		
 			NoteModel note = noteRepository.findById(noteId);
-			CollaboratorModel collaboratorDB = collaboratorRepository.findOneByEmail(email,noteId);
-			if (note != null && collaboratorDB == null) {
-				collaboratorDB.setEmail(email);
-				collaboratorDB.setNote(note);
-				collaboratorRepository.addCollaborator(collaboratorDB.getEmail(),noteId);
-				rabbitMQSender.send(new EmailObject(email,"Click the Link...","Colaboration done!"));
-				return collaboratorDB;
+			if(note != null) {
+				CollaboratorModel collaboratorDB = collaboratorRepository.findOneByEmail(email,noteId);
+				if (collaboratorDB == null) {
+					CollaboratorModel collaboratorModel = new CollaboratorModel();
+					collaboratorModel.setEmail(email);
+					collaboratorModel.setNote(note);
+					collaboratorRepository.addCollaborator(collaboratorModel.getEmail(),noteId);
+					if(rabbitMQSender.send(new EmailObject(email,"Click the Link...","Colaboration done!"+noteId)));
+					return collaboratorModel;
 			}
+		}
 		throw new CollaboratorException("No user Found");
 	}
-
+	
+	@Override
+    public CollaboratorModel mapCollaboratorToNote(String token, long collabId, long noteid) {
+        long userId = jwtGenerator.parseJwtToken(token);
+        UserModel user = userRepository.findById(userId);
+        System.out.println(user.toString());
+        if(user != null){
+        	
+            NoteModel note = noteRepository.findById(noteid);
+            if(note != null){
+                CollaboratorModel isCollabAvailable = collaboratorRepository.findById(collabId, noteid);
+                if(isCollabAvailable != null){
+                    Object collaborator = collaboratorRepository.findOneByCollabIdAndNoteId(isCollabAvailable.getId(), noteid);
+                    if(collaborator == null){
+                    	collaboratorRepository.insertdatatomap(noteid, isCollabAvailable.getId());
+                    }
+                    return isCollabAvailable;
+                }
+            }
+        }
+        throw new CollaboratorException("Sorry! User is UnAvailable");
+    }
+	
 	@Override
 	public Optional<CollaboratorModel> deleteCollaborator(Long collaboratorId, String email, long noteId) {
 		String token = redis.getMap(redisKey, email);

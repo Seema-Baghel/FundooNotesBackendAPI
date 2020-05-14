@@ -17,4 +17,6 @@ public interface CollaboratorService {
 
 	List<CollaboratorModel> getNoteCollaborators(String email, long noteId);
 
+	CollaboratorModel mapCollaboratorToNote(String token, long collaboratorid, long noteid);
+
 }

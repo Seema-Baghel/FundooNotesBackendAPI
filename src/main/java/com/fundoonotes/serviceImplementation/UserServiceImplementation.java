@@ -16,6 +16,7 @@ import com.fundoonotes.exception.UserDetailsNullException;
 import com.fundoonotes.model.UserModel;
 import com.fundoonotes.repository.UserRepository;
 import com.fundoonotes.responses.EmailObject;
+import com.fundoonotes.responses.Response;
 import com.fundoonotes.service.UserService;
 import com.fundoonotes.utility.EmailVerification;
 import com.fundoonotes.utility.Jwt;
@@ -77,6 +78,8 @@ public class UserServiceImplementation implements UserService {
 		UserModel usermodel = repository.findEmail(logindto.getEmail());
 		if (bCryptPasswordEncoder.matches(logindto.getPassword(),usermodel.getPassword())) {
 			
+			usermodel.setStatus("active");
+			repository.save(usermodel);
 			String token = tokenGenerator.createToken(usermodel.getId());
 			System.out.println("generated token : " + token);
 			redis.putMap(redisKey, usermodel.getEmail(), token);
@@ -133,5 +136,19 @@ public class UserServiceImplementation implements UserService {
 		}else{
 			throw new UserDetailsNullException("No data found can't reset the password");
 		}
+	}
+
+	@Override
+	public Response loginOut(String token) throws UserDetailsNullException {
+		long id = tokenGenerator.parseJwtToken(token);
+		UserModel user = repository.findById(id);
+		if (user == null) {
+			throw new UserDetailsNullException("No data found");
+		} else if (user.getStatus().equals("active")) {
+			user.setStatus("inactive");
+			repository.save(user);
+			return new Response("Logout successfull", 200);
+		}
+		return new Response("Logout failed", 400);
 	}
 }

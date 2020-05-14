@@ -32,8 +32,8 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 	NoteModel findByuserid(long userid);
 
 	@Modifying
-	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id, label_name, collaboratoe_id) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :id, :labelName, :id)" , nativeQuery = true)
-	public void insertData(String description, String createdDate, String title, String updatedDate, String noteColor, long id, List<LabelModel> labelName, List<UserModel> id2);
+	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :id)" , nativeQuery = true)
+	public void insertData(String description, String createdDate, String title, String updatedDate, String noteColor, long id);
 
 	@Modifying
 	@Query(value = "update note_model set description = :description , title = :title , updated_date = :updatedDate where user_id = :id AND id = :id2", nativeQuery = true)

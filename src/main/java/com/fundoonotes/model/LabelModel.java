@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class LabelModel {
 
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long labelId;
@@ -23,10 +24,12 @@ public class LabelModel {
 	@NotBlank
 	private String labelTitle;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private UserModel userLabel;
 	
+	@JsonIgnore
 	@ManyToMany(mappedBy = "labels")
 	private List<NoteModel> listnote;
 	

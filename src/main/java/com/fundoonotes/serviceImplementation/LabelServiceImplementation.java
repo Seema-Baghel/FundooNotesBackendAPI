@@ -64,9 +64,11 @@ public class LabelServiceImplementation implements LabelService {
 		UserModel user = userrepository.findById(id);
 		if (user != null) {
 			LabelModel label = labelrepository.findById(labelId, id);
-			label.setLabelTitle(labeldto.getLabelTitle());
-			labelrepository.update(label.getLabelTitle(), id);
-			return true;
+			if(label != null) {
+				label.setLabelTitle(labeldto.getLabelTitle());
+				labelrepository.update(label.getLabelTitle(), id);
+				return true;
+			}
 		}
 		return false;
 	}

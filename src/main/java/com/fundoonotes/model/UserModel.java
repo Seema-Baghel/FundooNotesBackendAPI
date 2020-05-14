@@ -43,10 +43,13 @@ public class UserModel {
   	  @Column(name = "modified_time")
   	  public String modifiedTime;
   	  
+  	  @Column(name = "status")
+  	  public String status;
+  	  
       public UserModel(){
       }
       
-	  public UserModel(long id, @NotNull String fname, @NotNull String lname, @NotNull String email, @NotNull String password, @NotNull boolean isVerified, String createdAt, String modifiedTime) {
+	  public UserModel(long id, @NotNull String fname, @NotNull String lname, @NotNull String email, @NotNull String password, @NotNull boolean isVerified, String createdAt, String modifiedTime, String status) {
 		
 		super();
 		this.id = id;
@@ -57,6 +60,7 @@ public class UserModel {
 		this.isVerified = isVerified;
 		this.createdAt = createdAt;
 		this.modifiedTime = modifiedTime;
+		this.status = status;
 	}
 
 	public UserModel(String fname, String lname, String email, String password) {
@@ -132,4 +136,12 @@ public class UserModel {
 		this.modifiedTime = modifiedTime;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -100,7 +101,7 @@ public class UserController {
 	 * API for reset password
 	 * 
 	 * @param token
-	 * @param pswd
+	 * @param pwd
 	 * @return response
 	 * @throws Exception
 	 */
@@ -114,4 +115,14 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Password is Update Successfully", 200));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Password and Confirm Password doesn't matched please enter again", 400));				
 	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<Response> loginOut(@RequestHeader("token") String token) throws UserDetailsNullException {
+		
+		Response userInformation = userservice.loginOut(token);
+		if (userInformation != null) 
+			return ResponseEntity.status(HttpStatus.OK).body(new Response("LogOut Successfull", 200));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Logout failed", 400));
+	}
+	
 }
