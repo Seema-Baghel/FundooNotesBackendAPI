@@ -147,8 +147,8 @@ public class UserServiceImplementation implements UserService {
 		} else if (user.getStatus().equals("active")) {
 			user.setStatus("inactive");
 			repository.save(user);
-			return new Response("Logout successfull", 200);
+			return new Response(200, "Logout successfull");
 		}
-		return new Response("Logout failed", 400);
+		return new Response(400, "Logout failed");
 	}
 }

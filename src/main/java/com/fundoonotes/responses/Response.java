@@ -6,9 +6,9 @@ public class Response {
 	private String message;
 	private Object data;
 	
-	public Response(String message,int status) {
-		this.message = message;
+	public Response(int status,String message) {
 		this.status = status;
+		this.message = message;
 	}
 	
 	public Response(String message,int status, Object data) {

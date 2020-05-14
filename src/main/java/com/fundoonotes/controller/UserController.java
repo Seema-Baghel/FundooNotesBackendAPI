@@ -43,8 +43,8 @@ public class UserController {
 		UserModel user = userservice.register(userdto);
 		
 		if (user != null) 
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Registration Successful",200));
-		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new Response("User already exist", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Registration Successful"));
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new Response(400, "User already exist"));
 	}  
 	
 	/**
@@ -59,8 +59,8 @@ public class UserController {
 		
 		UserModel userInformation = userservice.login(logindto);
 		if (userInformation != null) 
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Login Successfull", 200));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Login failed", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Login Successfull"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400, "Login failed"));
 	}
 	
 	/**
@@ -76,8 +76,8 @@ public class UserController {
 		UserModel user = userservice.verify(token);
 		
 		if(user != null)
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Verified Successfully",200));
-		return ResponseEntity.status(HttpStatus.OK).body(new Response("Not Verified", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Verified Successfully"));
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(400, "Not Verified"));
 	}
 	
 	/**
@@ -93,8 +93,8 @@ public class UserController {
 		UserModel user = userservice.forgetPassword(email);
 		
 		if (user != null) 
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Password is send to the Email-Id", 200));
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Sorry!! User Doesn't Exist", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Password is send to the Email-Id"));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(400, "Sorry!! User Doesn't Exist"));
 	}
 
 	/**
@@ -112,8 +112,8 @@ public class UserController {
 		UserModel user = userservice.resetPassword(resetPassword, token);
 		
 		if(user != null)
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Password is Update Successfully", 200));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Password and Confirm Password doesn't matched please enter again", 400));				
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Password is Update Successfully"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400, "Password and Confirm Password doesn't matched please enter again"));				
 	}
 	
 	@PostMapping("/logout")
@@ -121,8 +121,8 @@ public class UserController {
 		
 		Response userInformation = userservice.loginOut(token);
 		if (userInformation != null) 
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("LogOut Successfull", 200));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Logout failed", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Logout Successfull"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400, "Logout failed"));
 	}
 	
 }

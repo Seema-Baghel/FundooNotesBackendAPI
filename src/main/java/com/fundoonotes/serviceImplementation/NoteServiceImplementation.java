@@ -137,19 +137,153 @@ public class NoteServiceImplementation implements NoteService {
 			if (remender.equals("today")) {
 				note.get().setReminder(today);
 				noteRepository.save(note.get());
-				return new Response("Reminder set for today",200);
+				return new Response(200, "Reminder set for today");
 			} else if (remender.equals("tomorrow")) {
 				note.get().setReminder(tomorrow);
 				noteRepository.save(note.get());
-				return new Response("Reminder set for tomorrow",200);
+				return new Response(200, "Reminder set for tomorrow");
 			} else if (remender.equals("nextweek")) {
 				note.get().setReminder(nextWeek);
 				noteRepository.save(note.get());
-				return new Response("Reminder set for next week",200);
+				return new Response(200, "Reminder set for next week");
 			} else {
 				throw new NoteException("please enter valid reminder day- { Today, Tomorrow, NextWeek }");
 			}
 		}
 		return new Response(environment.getProperty("No reminder set"), 400, reminderOptions);
 	}
+
+	@Override
+	public boolean isPinnedNote(String token, long noteId) {
+		long userid = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userid);
+		if (isUserAvailable != null) {
+			NoteModel note = noteRepository.findById(noteId);
+				if (!note.isPinned()) {
+					note.setPinned(true);
+					note.setUpdatedDate(date);
+					noteRepository.save(note);
+					return true;
+				}
+				note.setPinned(false);
+				note.setUpdatedDate(date);
+				noteRepository.save(note);
+				return false;
+		}
+		throw new NoteException("Sorry! something went wrong");
+	}
+
+	@Override
+	public List<NoteModel> allPinnedNotes(String token) {
+		long userId = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userId);
+		if(isUserAvailable != null){
+			List<NoteModel> notes = noteRepository.getallpinned(userId);
+			return notes;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+
+	@Override
+	public List<NoteModel> allUnpinnedNotes(String token) {
+		long userId = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userId);
+		if(isUserAvailable != null){
+			List<NoteModel> notes = noteRepository.getallunpinned(userId);
+			return notes;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+
+	@Override
+	public boolean isArchivedNote(String token, long noteId) {
+		long userid = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userid);
+		if (isUserAvailable != null) {
+			NoteModel note = noteRepository.findById(noteId);
+			if (!note.isArchived()) {
+				note.setArchived(true);
+				note.setUpdatedDate(date);
+				noteRepository.save(note);
+				return true;
+			}
+			note.setArchived(false);
+			note.setUpdatedDate(date);
+			noteRepository.save(note);
+			return false;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+
+	@Override
+	public List<NoteModel> allArchived(String token) {
+		long userId = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userId);
+		if(isUserAvailable != null){
+			List<NoteModel> notes = noteRepository.getallarchived(userId);
+			return notes;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+
+	@Override
+	public List<NoteModel> allUnarchived(String token) {
+		long userId = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userId);
+		if(isUserAvailable != null){
+			List<NoteModel> notes = noteRepository.getallunarchived(userId);
+			return notes;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+
+	@Override
+	public boolean trashNote(String token, long noteId) {
+		long userid = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userid);
+		if (isUserAvailable != null) {
+			NoteModel note = noteRepository.findById(noteId);
+				if (!note.isTrashed()) {
+					note.setTrashed(true);
+					note.setArchived(false);
+					note.setPinned(false);
+					note.setReminder(null);
+					note.setUpdatedDate(date);
+					noteRepository.save(note);
+					return true;
+				}
+				
+				return false;
+			}
+		throw new NoteException("Sorry! User not found");
+		}
+
+	@Override
+	public List<NoteModel> allTrashedNotes(String token) {
+		long userId = tokenGenerator.parseJwtToken(token);
+		Object isUserAvailable = userRepository.findById(userId);
+		if(isUserAvailable != null){
+			List<NoteModel> notes = noteRepository.getalltrashed(userId);
+			return notes;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+
+	@Override
+	public boolean restoreNote(String token, long noteId) {
+		long userid = tokenGenerator.parseJwtToken(token);
+		UserModel isUserAvailable = userRepository.findById(userid);
+		if (isUserAvailable != null) {
+			NoteModel note = noteRepository.findById(noteId);
+			if (note.isTrashed()) {
+				note.setTrashed(false);
+				note.setUpdatedDate(date);
+				noteRepository.save(note);
+				return true;
+			}
+			return false;
+		}
+		throw new NoteException("Sorry! User not found");
+	}
+	
 }

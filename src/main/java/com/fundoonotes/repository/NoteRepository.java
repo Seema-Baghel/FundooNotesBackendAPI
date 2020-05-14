@@ -55,4 +55,31 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 
 	@Query(value = "select * from note_model where user_id=:userId and id = :id", nativeQuery = true)
 	List<NoteModel> searchAllNotesByNoteId(long userId, long id);
+	
+	@Modifying
+	@Query(value = "update note_model set is_pinned = :b where user_id = :userid AND id = :id", nativeQuery = true)
+	void setPinned(boolean b, long userid, long id);
+	
+	@Query(value = "select * from note_model where user_id = :userId and is_pinned = true and is_trashed = false and is_archived = false", nativeQuery = true)
+	List<NoteModel> getallpinned(long userId);
+
+	@Query(value = "select * from note_model where user_id = :userId and is_pinned = false and is_trashed = false and is_archived = false", nativeQuery = true)
+	List<NoteModel> getallunpinned(long userId);
+	
+	@Modifying
+	@Query(value = "update note_model set is_archived = :b where user_id = :userid AND id = :id", nativeQuery = true)
+	void setArchive(boolean b, long userid, long id);
+
+	@Query(value = "select * from note_model where user_id = :userId and is_archived = true and is_trashed = false ", nativeQuery = true)
+	List<NoteModel> getallarchived(long userId);
+
+	@Query(value = "select * from note_model where user_id = :userId and is_archived = false", nativeQuery = true)
+	List<NoteModel> getallunarchived(long userId);
+	
+	@Modifying
+	@Query(value = "update note_model set is_trashed = :b where user_id = :userid AND id = :id" ,  nativeQuery = true)
+	void setTrashed(boolean b,long userid,long id);
+	
+	@Query(value = "select * from note_model where user_id = :userId and is_trashed = true", nativeQuery = true)
+	List<NoteModel> getalltrashed(long userId);
 }

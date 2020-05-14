@@ -27,5 +27,22 @@ public interface NoteService {
 
 	public Response setReminder(long noteId, String reminder);
 
+	public boolean isPinnedNote(String token, long noteId);
+	
+	public List<NoteModel> allPinnedNotes(String token);
+
+	public List<NoteModel> allUnpinnedNotes(String token);
+
+	public boolean isArchivedNote(String token, long noteId);
+
+	public List<NoteModel> allArchived(String token);
+
+	public List<NoteModel> allUnarchived(String token);
+
+	public boolean trashNote(String token, long noteId);
+
+	public List<NoteModel> allTrashedNotes(String token);
+
+	public boolean restoreNote(String token, long noteId);
 	
 }

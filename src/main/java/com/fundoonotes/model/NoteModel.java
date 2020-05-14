@@ -48,19 +48,19 @@ public class NoteModel {
 	@JoinColumn(name = "userId")
 	private UserModel createdBy;
 	
-//	@OneToMany
-//	@JoinColumn(name = "labelName")
-//	private LabelModel label;
-//	
-//	@OneToMany
-//	@JoinColumn(name = "Collaborator")
-//	private CollaboratorModel collaborate;
+	@Column(columnDefinition = "boolean default false")
+	private boolean isPinned;
 	
+	@Column(columnDefinition = "boolean default false")
+	private boolean isArchived;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@Column(columnDefinition = "boolean default false")
+	private boolean isTrashed;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
 	private List<LabelModel> labels;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	private List<CollaboratorModel> collaborator;
 
 	public NoteModel() {
@@ -72,7 +72,8 @@ public class NoteModel {
 		this.title = title;
 		this.description = description;
 	}
-	public NoteModel(String title, String description, String createdDate, String updatedDate, UserModel createdBy, String notecolor) {
+	public NoteModel(String title, String description, String createdDate, String updatedDate, UserModel createdBy, String notecolor, boolean isPinned,
+					boolean isArchived, boolean isTrashed) {
 		super();
 		this.title = title;
 		this.description = description;
@@ -80,6 +81,9 @@ public class NoteModel {
 		this.updatedDate = updatedDate;
 		this.createdBy = createdBy;
 		this.NoteColor = notecolor;
+		this.isPinned = isPinned;
+		this.isArchived = isArchived;
+		this.isTrashed = isTrashed;
 	}
 	
 	
@@ -147,6 +151,30 @@ public class NoteModel {
 		this.createdBy = createdBy;
 	}
 
+	public boolean isPinned() {
+		return isPinned;
+	}
+
+	public void setPinned(boolean isPinned) {
+		this.isPinned = isPinned;
+	}
+
+	public boolean isArchived() {
+		return isArchived;
+	}
+
+	public void setArchived(boolean isArchived) {
+		this.isArchived = isArchived;
+	}
+
+	public boolean isTrashed() {
+		return isTrashed;
+	}
+
+	public void setTrashed(boolean isTrashed) {
+		this.isTrashed = isTrashed;
+	}
+
 	public List<LabelModel> getLabels() {
 		return labels;
 	}
@@ -162,24 +190,6 @@ public class NoteModel {
 	public void setCollaborator(List<CollaboratorModel> collaborator) {
 		this.collaborator = collaborator;
 	}
-	
-	
-//	public LabelModel getLabel() {
-//		return label;
-//	}
-//
-//	public void setLabel(LabelModel label) {
-//		this.label = label;
-//	}
-//
-//	public CollaboratorModel getCollaborate() {
-//		return collaborate;
-//	}
-//
-//	public void setCollaborate(CollaboratorModel collaborate) {
-//		this.collaborate = collaborate;
-//	}
-
 	
 
 }

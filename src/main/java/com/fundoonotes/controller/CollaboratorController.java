@@ -37,8 +37,8 @@ public class CollaboratorController {
 	private ResponseEntity<Response> addCollaborator(@RequestParam("email") String email, @RequestParam("noteId") long noteId) {
 		CollaboratorModel result = collaboratorService.addCollaborator(email, noteId);
 		if(result != null)
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Added collabrator sucessfully!!!",200));
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Sorry! No collaborator added", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Added collabrator sucessfully!!!"));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(400, "Sorry! No collaborator added"));
 	}
 	
 	/*
@@ -54,8 +54,8 @@ public class CollaboratorController {
             @RequestParam("collaboratorid") long collaboratorid, @RequestParam("noteid") long noteid) {
 		CollaboratorModel result = collaboratorService.mapCollaboratorToNote(token, collaboratorid, noteid);
         if (result != null)
-            return ResponseEntity.status(HttpStatus.OK).body(new Response("collaborator added", 200));
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("Something went wrong", 400));
+            return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "collaborator added"));
+        return ResponseEntity.status(HttpStatus.OK).body(new Response(400, "Something went wrong"));
     }
 
 	
@@ -74,7 +74,7 @@ public class CollaboratorController {
 		Optional<CollaboratorModel> result = collaboratorService.deleteCollaborator(collaboratorId, email, noteId);
 		if(result != null) 
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Deleted collaborator sucessfully!!!",200, result));
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Sorry! Cannot delete ", 400));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(400, "Sorry! Cannot delete "));
 	}
 
 	/*
@@ -90,6 +90,6 @@ public class CollaboratorController {
 		List<CollaboratorModel> collaboratorList = collaboratorService.getNoteCollaborators(email, noteId);
 		if(collaboratorList != null) 
 			return ResponseEntity.status(HttpStatus.CREATED).body(new Response("All note collaborators are", 200, collaboratorList));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Sorry! no collaborator found", 400));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(200, "Sorry! no collaborator found"));
 	}
 }

@@ -38,7 +38,7 @@ public class NoteController {
 	private ResponseEntity<Response> createNote(@RequestBody NoteDto notedto, @RequestHeader("token") String token)throws NoteException{
 
 		NoteModel note = noteService.createNote(notedto, token);
-		return ResponseEntity.status(HttpStatus.OK).body(new Response("Note is created successfully",200));
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Note is created successfully"));
 	}
 
 	/*
@@ -52,8 +52,8 @@ public class NoteController {
 	public ResponseEntity<Response> updateNote(@RequestBody NoteDto notedto, @RequestParam("id") long id, @RequestHeader("token") String token) {
 		boolean result = noteService.updateNote(notedto, id, token);
 		if (result) 
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Note is update successfully", 200));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Something went wrong", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Note is update successfully"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400, "Something went wrong"));
 	}
 	
 	/*
@@ -69,8 +69,8 @@ public class NoteController {
 	{
 		boolean result = noteService.addColor(token, id, color);
 		if(result)
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Color is added", 200));
-		return ResponseEntity.status(HttpStatus.OK).body(new Response("Error! color is not added", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Color is added"));
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(400, "Error! color is not added"));
 	}
 	
 	/*
@@ -85,12 +85,14 @@ public class NoteController {
 
 		boolean result = noteService.deleteNote(token, id);
 		if (result)
-			return ResponseEntity.status(HttpStatus.OK).body(new Response("Deleted Succussfully", 200));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Error! note can't be deleted", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Deleted Succussfully"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400, "Error! note can't be deleted"));
 	}
 	
 	/*
 	 * API to get all notes
+	 * 
+	 * @header token
 	 */
 	
 	@GetMapping("/allnotes")
@@ -118,5 +120,101 @@ public class NoteController {
 	@PutMapping("/reminder/{noteId}/{reminder}")
 	public Response setReminder(@PathVariable String reminder, @PathVariable long noteId) throws Exception {
 		return noteService.setReminder(noteId, reminder);
+	}
+	
+	/*
+	 * API to pin and unpin a notes
+	 */
+	
+	@PatchMapping("/pin/{id}")
+	public ResponseEntity<Response> pinNote(@RequestHeader("token") String token, @PathVariable("id") long noteId) {
+		if (noteService.isPinnedNote(token, noteId))
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Note pinned"));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response(200, "Note unpinned"));
+	}
+	
+	/*
+	 * API to get all pined notes
+	 */
+		
+	@GetMapping("/allpinnednotes")
+	private ResponseEntity<Response> getPinnedNotes(@RequestHeader("token") String token) {
+		List<NoteModel> notesList = noteService.allPinnedNotes(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("all pinned notes of user",200, notesList));
+	}
+	
+	/*
+	 * API to get all unpined notes
+	 */
+	
+	@GetMapping("/allunpinnednotes")
+	private ResponseEntity<Response> getAllUnpinnedNotes(@RequestHeader("token") String token) {
+		
+		List<NoteModel> notesList = noteService.allUnpinnedNotes(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("all unpinned notes of user",200, notesList));
+	}
+	
+	/*
+	 * API to delete a notes and put it in trash
+	 */
+	
+	@DeleteMapping("/trash")
+	public ResponseEntity<Response> trashNote(@RequestHeader("token") String token, @RequestParam("id") long noteId) {
+		if (noteService.trashNote(token, noteId)) 
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Note trashed"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400,"Error! Note is not trashed"));
+	}
+	
+	/*
+	 * API to get all trashed notes from trash
+	 */
+	
+	@GetMapping("/alltrashednotes")
+	public ResponseEntity<Response> getAllTrashedNotes(@RequestHeader("token") String token) {
+		List<NoteModel> notesList = noteService.allTrashedNotes(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("all trashed notes of user",200, notesList));
+	}
+	
+	/*
+	 * API to restore a notes and from trash
+	 */
+	
+	@PutMapping("/restore")
+	public ResponseEntity<Response> restoreFromTrashed(@RequestHeader("token") String token, @RequestParam("id") long noteId) {
+		if (noteService.restoreNote(token, noteId)) 
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200,"Note restored"));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400,"Error in Restoring note!"));
+
+	}
+	
+	/*
+	 * API to  a notes
+	 */
+	
+	@DeleteMapping("/archive")
+	public ResponseEntity<Response> archieveNote(@RequestHeader("token") String token, @RequestParam("id") long noteId) {
+		if (noteService.isArchivedNote(token, noteId)) 
+			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Note archieved"));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response(200, "Note unarchived"));
+	}
+	
+	/*
+	 * API to get all archived notes
+	 */
+	
+	@GetMapping("/getallarchived")
+	private ResponseEntity<Response> getallarchived(@RequestHeader("token") String token) {
+		List<NoteModel> notesList = noteService.allArchived(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("all archived notes of user",200, notesList));
+	}
+	
+	/*
+	 * API to get all unarchived notes
+	 */
+	
+	@GetMapping("/getallunarchived")
+	private ResponseEntity<Response> getallunarchived(@RequestHeader("token") String token) {
+		List<NoteModel> notesList = noteService.allUnarchived(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("all unarchived notes of user",200, notesList));
 	}
 }
