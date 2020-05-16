@@ -22,6 +22,8 @@ public interface UserService {
 	
 	UserModel resetPassword(ResetPasswordDto resetpassword, String token) throws UserDetailsNullException;
 
-	Response loginOut(String token) throws UserDetailsNullException;
+	boolean logout(String token) throws UserDetailsNullException;
+
+	boolean isSessionActive(String token);
 
 }

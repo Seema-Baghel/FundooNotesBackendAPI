@@ -69,9 +69,9 @@ public class CollaboratorController {
 	 */
 
 	@DeleteMapping("/deleteCollaborator")
-	public ResponseEntity<Response> deleteCollaborator(@RequestParam(value = "noteId") long noteId, @RequestHeader("email") String email,
-														@RequestHeader("collaboratorId") long collaboratorId) {
-		Optional<CollaboratorModel> result = collaboratorService.deleteCollaborator(collaboratorId, email, noteId);
+	public ResponseEntity<Response> deleteCollaborator(@RequestParam(value = "noteId") long noteId, @RequestHeader("token") String token,
+														@RequestParam("collaboratorId") long collaboratorId) {
+		Optional<CollaboratorModel> result = collaboratorService.deleteCollaborator(collaboratorId, token, noteId);
 		if(result != null) 
 			return ResponseEntity.status(HttpStatus.OK).body(new Response("Deleted collaborator sucessfully!!!",200, result));
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(400, "Sorry! Cannot delete "));
@@ -85,9 +85,8 @@ public class CollaboratorController {
 	 */
 	
 	@GetMapping("/getAllNoteCollaborator")
-	public ResponseEntity<Response> getAllCollaborator(@RequestParam(value = "noteId") long noteId,
-														@RequestHeader("email") String email) {
-		List<CollaboratorModel> collaboratorList = collaboratorService.getNoteCollaborators(email, noteId);
+	public ResponseEntity<Response> getAllCollaborator(@RequestParam(value = "noteId") long noteId, @RequestHeader("token") String token) {
+		List<CollaboratorModel> collaboratorList = collaboratorService.getNoteCollaborators(token, noteId);
 		if(collaboratorList != null) 
 			return ResponseEntity.status(HttpStatus.CREATED).body(new Response("All note collaborators are", 200, collaboratorList));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(200, "Sorry! no collaborator found"));

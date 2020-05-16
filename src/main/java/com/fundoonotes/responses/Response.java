@@ -16,7 +16,7 @@ public class Response {
 		this.status = status;
 		this.data = data;
 	}
-
+	
 	public int getStatus(){
 		return status;
 	}

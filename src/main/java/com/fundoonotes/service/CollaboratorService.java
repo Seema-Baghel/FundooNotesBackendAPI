@@ -13,9 +13,9 @@ public interface CollaboratorService {
 
 	CollaboratorModel addCollaborator(String email, long noteId);
 
-	Optional<CollaboratorModel> deleteCollaborator(Long collaboratorId, String email, long noteId);
+	Optional<CollaboratorModel> deleteCollaborator(long collaboratorId, String token, long noteId);
 
-	List<CollaboratorModel> getNoteCollaborators(String email, long noteId);
+	List<CollaboratorModel> getNoteCollaborators(String token, long noteId);
 
 	CollaboratorModel mapCollaboratorToNote(String token, long collaboratorid, long noteid);
 

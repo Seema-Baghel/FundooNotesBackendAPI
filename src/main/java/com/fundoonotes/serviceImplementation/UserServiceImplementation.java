@@ -78,7 +78,7 @@ public class UserServiceImplementation implements UserService {
 		UserModel usermodel = repository.findEmail(logindto.getEmail());
 		if (bCryptPasswordEncoder.matches(logindto.getPassword(),usermodel.getPassword())) {
 			
-			usermodel.setStatus("active");
+			usermodel.setUserStatus(true);
 			repository.save(usermodel);
 			String token = tokenGenerator.createToken(usermodel.getId());
 			System.out.println("generated token : " + token);
@@ -87,6 +87,7 @@ public class UserServiceImplementation implements UserService {
 		}
 		throw new UserDetailsNullException("Login failed");
 	 }
+
 
 	@Override
 	public UserModel verify(String token) throws UserDetailsNullException{
@@ -139,16 +140,25 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public Response loginOut(String token) throws UserDetailsNullException {
+	public boolean logout(String token) throws UserDetailsNullException {
 		long id = tokenGenerator.parseJwtToken(token);
 		UserModel user = repository.findById(id);
 		if (user == null) {
 			throw new UserDetailsNullException("No data found");
-		} else if (user.getStatus().equals("active")) {
-			user.setStatus("inactive");
+		} else if (user.isUserStatus()) {
+			user.setUserStatus(false);
 			repository.save(user);
-			return new Response(200, "Logout successfull");
+			return true;
 		}
-		return new Response(400, "Logout failed");
+		return false;
+	}
+
+	
+
+	@Override
+	public boolean isSessionActive(String token) {
+		long id = tokenGenerator.parseJwtToken(token);
+		UserModel user = repository.findById(id);
+		return user.isUserStatus();	
 	}
 }

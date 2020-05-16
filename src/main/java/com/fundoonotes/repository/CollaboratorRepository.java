@@ -16,30 +16,30 @@ import com.fundoonotes.model.CollaboratorModel;
 @Transactional
 public interface CollaboratorRepository extends JpaRepository<CollaboratorModel, Object> {
 
-	@Query(value = "select * from collaborator where email=? and noteid=?",nativeQuery=true)
-	CollaboratorModel findOneByEmail(String email, long noteId);
+	@Query(value = "select * from collaborator_model where collaborator_mail=? and note_id=?",nativeQuery=true)
+	CollaboratorModel findOneByEmail(String collaborator_mail, long note_id);
 	
-	@Query(value = "select * from collaborator where id=? and noteid=?",nativeQuery=true)
-	CollaboratorModel findById(long id, long noteId);
+	@Query(value = "select * from collaborator_model where collaborator_id=:collaborator_id and note_id=:note_id",nativeQuery=true)
+	CollaboratorModel findById(long collaborator_id, long note_id);
 
 	@Modifying
-	@Query(value = "insert into collaborator(email,noteid)values(?,?)",nativeQuery=true)
-	void addCollaborator(String email,long noteid);
+	@Query(value = "insert into collaborator_model(collaborator_mail, note_id)values(?,?)",nativeQuery=true)
+	void addCollaborator(String collaborator_mail, long note_id);
 
-	@Query(value = "select * from collaborator where id=?",nativeQuery=true)
-	Optional<CollaboratorModel> findById(long id);
+	@Query(value = "select * from collaborator_model where collaborator_id=?",nativeQuery=true)
+	Optional<CollaboratorModel> findById(long collaborator_id);
 
 	@Modifying
-	@Query(value = "delete from collaborator where id=? and noteid=?",nativeQuery=true)
-	void deleteCollaborator(long collaboratorId,long noteId);
+	@Query(value = "delete from collaborator_model where collaborator_id=? and note_id=?",nativeQuery=true)
+	void deleteCollaborator(long collaborator_id,long note_id);
 
-	@Query(value = "select * from collaborator where noteid=?", nativeQuery = true)
+	@Query(value = "select * from collaborator_model where note_id=?", nativeQuery = true)
 	List<CollaboratorModel> getAllNoteCollaborators(long noteId);
 	
-	@Query(value = "select * from note_model_collaborator where collaborator_id= :id and note_model_id= :noteId",nativeQuery=true)
-	Object findOneByCollabIdAndNoteId(long id, long noteId);
+	@Query(value = "select * from note_model_collaborator where listcollaborator_id= :note_id and collaborator_collaborator_id= :collaborator_id",nativeQuery=true)
+	Object findOneByCollabIdAndNoteId(long collaborator_id, long note_id);
 	
 	@Modifying
-	@Query(value = "insert into note_model_collaborator(collaborator_id, note_model_id) values(:id, :noteId)",nativeQuery=true)
-	void insertdatatomap(long id, long noteId);
+	@Query(value = "insert into note_model_collaborator(listcollaborator_id,collaborator_collaborator_id) values(:note_id,:collaborator_id)",nativeQuery=true)
+	void insertdatatomap(long note_id, long collaborator_id);
 }

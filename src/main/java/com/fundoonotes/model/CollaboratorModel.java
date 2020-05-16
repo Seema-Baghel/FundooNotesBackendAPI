@@ -1,10 +1,14 @@
 package com.fundoonotes.model;
 
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -12,38 +16,27 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "collaborator")
+@Table(name = "collaborator_model")
 public class CollaboratorModel {
 
-	@JsonIgnore
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "collaborator_id")
 	private long id;
 
 	@NotNull
+	@Column(name = "collaborator_mail")
 	private String email;
 
 	@JsonIgnore
-	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "noteID")
+	@JoinColumn(name = "note_id")
 	private NoteModel note ;
 	
-	public CollaboratorModel() {
-		super();
-	}
-
-	public CollaboratorModel(long id, @NotNull String email, @NotNull NoteModel note) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.note = note;
-	}
-
-	@Override
-	public String toString() {
-		return "Collaborator [id=" + id + ", email=" + email + ", note=" + note + "]";
-	}
+	@JsonIgnore
+	@ManyToMany(mappedBy="collaborator")
+	private List<NoteModel> listcollaborator;
 
 	public long getId() {
 		return id;
@@ -69,13 +62,14 @@ public class CollaboratorModel {
 		this.note = note;
 	}
 
-//	public List<NoteModel> getListcollaborator() {
-//		return listcollaborator;
-//	}
-//
-//	public void setListcollaborator(List<NoteModel> listcollaborator) {
-//		this.listcollaborator = listcollaborator;
-//	}
+	public List<NoteModel> getListcollaborator() {
+		return listcollaborator;
+	}
+
+	public void setListcollaborator(List<NoteModel> listcollaborator) {
+		this.listcollaborator = listcollaborator;
+	}
 	
 	
+
 }

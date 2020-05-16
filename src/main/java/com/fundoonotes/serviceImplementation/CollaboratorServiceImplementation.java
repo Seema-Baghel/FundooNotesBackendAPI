@@ -68,9 +68,7 @@ public class CollaboratorServiceImplementation implements CollaboratorService {
     public CollaboratorModel mapCollaboratorToNote(String token, long collabId, long noteid) {
         long userId = jwtGenerator.parseJwtToken(token);
         UserModel user = userRepository.findById(userId);
-        System.out.println(user.toString());
         if(user != null){
-        	
             NoteModel note = noteRepository.findById(noteid);
             if(note != null){
                 CollaboratorModel isCollabAvailable = collaboratorRepository.findById(collabId, noteid);
@@ -87,8 +85,7 @@ public class CollaboratorServiceImplementation implements CollaboratorService {
     }
 	
 	@Override
-	public Optional<CollaboratorModel> deleteCollaborator(Long collaboratorId, String email, long noteId) {
-		String token = redis.getMap(redisKey, email);
+	public Optional<CollaboratorModel> deleteCollaborator(long collaboratorId, String token, long noteId) {
 		long userId = jwtGenerator.parseJwtToken(token);
 		UserModel user = userRepository.findById(userId);
 		if (user != null) {
@@ -105,8 +102,7 @@ public class CollaboratorServiceImplementation implements CollaboratorService {
 	}
 
 	@Override
-	public List<CollaboratorModel> getNoteCollaborators(String email, long noteId) {
-		String token = redis.getMap(redisKey, email);
+	public List<CollaboratorModel> getNoteCollaborators(String token, long noteId) {
 		long userId = jwtGenerator.parseJwtToken(token);
 		if (userId != 0) {
 			List<NoteModel> note = noteRepository.searchAllNotesByNoteId(userId, noteId);

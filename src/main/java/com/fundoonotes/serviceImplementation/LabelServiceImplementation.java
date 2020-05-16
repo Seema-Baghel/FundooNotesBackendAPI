@@ -122,7 +122,7 @@ public class LabelServiceImplementation implements LabelService {
 		}
 		throw new NoteException("Error! No User found");	
 	}
-
+	
 	@Override
 	public LabelModel addLabelsToNote(String token, long labelid, long noteid) {
 		long userId = tokenGenerator.parseJwtToken(token);

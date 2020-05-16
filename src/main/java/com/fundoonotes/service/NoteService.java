@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.fundoonotes.dto.NoteDto;
+import com.fundoonotes.dto.ReminderDateTimeDto;
 import com.fundoonotes.model.NoteModel;
 import com.fundoonotes.responses.Response;
 
@@ -27,8 +28,10 @@ public interface NoteService {
 
 	public List<NoteModel> searchByDecription(String token, String noteDescription);
 	
-	public Response setReminder(long noteId, String reminder);
+	public ResponseEntity<String> setReminder(ReminderDateTimeDto reminderDateTimeDto, long id);
 
+	public ResponseEntity<String> unsetReminder(long id);
+	
 	public boolean isPinnedNote(String token, long noteId);
 	
 	public List<NoteModel> allPinnedNotes(String token);
@@ -46,6 +49,12 @@ public interface NoteService {
 	public List<NoteModel> allTrashedNotes(String token);
 
 	public boolean restoreNote(String token, long noteId);
+
+	public ResponseEntity<Object> sortByTitle();
+
+	public ResponseEntity<Object> sortByDescription();
+
+	
 
 	
 	

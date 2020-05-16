@@ -66,7 +66,7 @@ public class LabelController {
 	 */
 	
 	@DeleteMapping("/deletelabel")
-	public ResponseEntity<Response> deleteLabel(@RequestHeader("token") String token, @RequestHeader("labelId") long labelId){
+	public ResponseEntity<Response> deleteLabel(@RequestHeader("token") String token, @RequestParam("labelId") long labelId){
 
 		boolean result = labelService.deleteLabel(token, labelId);
 		if(result)
@@ -92,7 +92,7 @@ public class LabelController {
 	 * @param noteid
 	 */
 	
-	@PostMapping("/maptonote")
+	@PutMapping("/maptonote")
 	public ResponseEntity<Response> mapToNote(@RequestBody LabelDto labeldto,@RequestHeader("token") String token,
 											  @RequestParam("noteid") long noteid){
 		LabelModel result = labelService.mapToNote(labeldto, noteid, token);
@@ -100,7 +100,7 @@ public class LabelController {
 			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Label is mapped to note"));
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(400, "The label you are trying to map is already exist!!!"));
 	}
-
+	
 	/*
 	 * API to add some note to a label
 	 * 

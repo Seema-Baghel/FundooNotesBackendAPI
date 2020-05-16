@@ -21,5 +21,6 @@ public interface LabelService {
 
 	LabelModel mapToNote(LabelDto labeldto, long noteid, String token);
 
-	LabelModel addLabelsToNote(String token, long labelid, long noteid);
+	LabelModel addLabelsToNote(String token, long labelId, long noteId);
+
 }

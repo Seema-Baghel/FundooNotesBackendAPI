@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fundoonotes.dto.NoteDto;
+import com.fundoonotes.dto.ReminderDateTimeDto;
 import com.fundoonotes.exception.NoteException;
 import com.fundoonotes.model.NoteModel;
 import com.fundoonotes.responses.Response;
@@ -113,6 +114,10 @@ public class NoteController {
 
 	}
 	
+	/*
+	 * API to search notes by its Description
+	 */
+	
 	@GetMapping("/searchByDescription")
 	public ResponseEntity<Response> searchByDescription(@RequestHeader("token") String token, @RequestParam("description") String noteDescription) {
 		List<NoteModel> findNotes = noteService.searchByDecription(token, noteDescription);
@@ -121,12 +126,41 @@ public class NoteController {
 	}
 	
 	/*
+	 * API to sort notes by its title
+	 */
+	
+	@GetMapping("/sortByTitle")
+	public ResponseEntity<Object> sortByTitle() {
+
+		return noteService.sortByTitle();
+	}
+	
+	/*
+	 * API to sort notes by its Description
+	 */
+	
+	@GetMapping("/sortByDescription")
+	public ResponseEntity<Object> sortByDescription() {
+
+		return noteService.sortByDescription();
+	}
+	
+	/*
 	 * API to set reminder to notes
 	 */
 	
-	@PutMapping("/reminder/{noteId}/{reminder}")
-	public Response setReminder(@PathVariable String reminder, @PathVariable long noteId) throws Exception {
-		return noteService.setReminder(noteId, reminder);
+	@PostMapping("/setReminder/{id}")
+	public ResponseEntity<String> setReminder(@RequestBody ReminderDateTimeDto reminderDateTimeDto, @PathVariable("id") long id) {
+		return noteService.setReminder(reminderDateTimeDto, id);
+	}
+	
+	/*
+	 * API to unset reminder to notes
+	 */
+	@PutMapping("/unsetReminder/{id}")
+	public ResponseEntity<String> unsetReminder(@PathVariable("id") long id) {
+
+		return noteService.unsetReminder(id);
 	}
 	
 	/*

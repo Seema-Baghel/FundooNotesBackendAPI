@@ -41,7 +41,7 @@ public class NoteModel {
 	@Column(length = 30)
 	private String updatedDate;
 	
-	private LocalDate reminder;
+	private String reminder;
 	
 	@JsonIgnore
 	@ManyToOne
@@ -135,12 +135,12 @@ public class NoteModel {
 		this.updatedDate = updatedDate;
 	}
 
-	public LocalDate getReminder() {
+	public String getReminder() {
 		return reminder;
 	}
 
-	public void setReminder(LocalDate reminder) {
-		this.reminder = reminder;
+	public void setReminder(String formattedDateTime) {
+		this.reminder = formattedDateTime;
 	}
 
 	public UserModel getCreatedBy() {

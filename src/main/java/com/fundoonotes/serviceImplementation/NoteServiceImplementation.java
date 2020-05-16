@@ -3,6 +3,8 @@ package com.fundoonotes.serviceImplementation;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +14,11 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.fundoonotes.dto.NoteDto;
+import com.fundoonotes.dto.ReminderDateTimeDto;
 import com.fundoonotes.exception.NoteException;
 import com.fundoonotes.model.NoteModel;
 import com.fundoonotes.model.UserModel;
@@ -34,6 +39,9 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Autowired
 	private NoteRepository noteRepository;
+	
+	@Autowired
+	List<NoteDto> listOfNotes;
 
 	@Autowired
 	private Environment environment;
@@ -147,34 +155,26 @@ public class NoteServiceImplementation implements NoteService {
 	
 
 	@Override
-	public Response setReminder(long noteId, String reminder) {
-		Optional<NoteModel> note = noteRepository.findBynoteId(noteId);
-		note.orElseThrow(() -> new NoteException(environment.getProperty("Note doesn't exit")));
-		String remender = reminder.toLowerCase();
-		LocalDate today = LocalDate.now();
-		LocalDate tomorrow = today.plusDays(1);
-		LocalDate nextWeek = today.plusWeeks(1);
-		String[] reminderOptions = { "today", "tomorrow", "nextweek" };
-		for (@SuppressWarnings("unused")
-		String string : reminderOptions) {
-			if (remender.equals("today")) {
-				note.get().setReminder(today);
-				noteRepository.save(note.get());
-				return new Response(200, "Reminder set for today");
-			} else if (remender.equals("tomorrow")) {
-				note.get().setReminder(tomorrow);
-				noteRepository.save(note.get());
-				return new Response(200, "Reminder set for tomorrow");
-			} else if (remender.equals("nextweek")) {
-				note.get().setReminder(nextWeek);
-				noteRepository.save(note.get());
-				return new Response(200, "Reminder set for next week");
-			} else {
-				throw new NoteException("please enter valid reminder day- { Today, Tomorrow, NextWeek }");
-			}
-		}
-		return new Response(environment.getProperty("No reminder set"), 400, reminderOptions);
+	public ResponseEntity<String> setReminder(ReminderDateTimeDto reminderDateTimeDto, long id) {
+		Optional<NoteModel> note = noteRepository.findBynoteId(id);
+		LocalDateTime reminderDateTime = LocalDateTime.of(reminderDateTimeDto.getYear(), reminderDateTimeDto.getMonth(),
+														  reminderDateTimeDto.getDay(), reminderDateTimeDto.getHour(),
+														  reminderDateTimeDto.getMinute());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy  hh:mm a");
+		String formattedDateTime = reminderDateTime.format(formatter);
+		note.get().setReminder(formattedDateTime);
+		noteRepository.save(note.get());
+		return new ResponseEntity<String>(environment.getProperty("Reminder set successfully"), HttpStatus.OK);
 	}
+	
+	@Override
+	public ResponseEntity<String> unsetReminder(long id) {
+		NoteModel note = noteRepository.findById(id);
+		note.setReminder(null);
+		noteRepository.save(note);
+		return new ResponseEntity<String>(environment.getProperty("Reminder removed successfully"), HttpStatus.OK);
+	}
+
 
 	@Override
 	public boolean isPinnedNote(String token, long noteId) {
@@ -309,5 +309,24 @@ public class NoteServiceImplementation implements NoteService {
 		throw new NoteException("Sorry! User not found");
 	}
 
+	@Override
+	public ResponseEntity<Object> sortByTitle() {
+		ModelMapper mapper = new ModelMapper();
+		noteRepository.findByOrderByTitleAsc().stream().forEach(note -> {
+			listOfNotes.add(mapper.map(note, NoteDto.class));
+		});
+		return new ResponseEntity<Object>(listOfNotes, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Object> sortByDescription() {
+		ModelMapper mapper = new ModelMapper();
+		noteRepository.findByOrderByDescriptionAsc().stream().forEach(note -> {
+			listOfNotes.add(mapper.map(note, NoteDto.class));
+		});
+		return new ResponseEntity<Object>(listOfNotes, HttpStatus.OK);
+	}
+
+	
 	
 }

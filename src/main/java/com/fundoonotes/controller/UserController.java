@@ -107,7 +107,7 @@ public class UserController {
 	 */
 	
 	@PutMapping("/resetpassword/{token}")
-	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @PathVariable("token") String token) throws UserDetailsNullException {
+	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @RequestHeader("token") String token) throws UserDetailsNullException {
 		
 		UserModel user = userservice.resetPassword(resetPassword, token);
 		
@@ -117,12 +117,12 @@ public class UserController {
 	}
 	
 	@PostMapping("/logout")
-	public ResponseEntity<Response> loginOut(@RequestHeader("token") String token) throws UserDetailsNullException {
+	public ResponseEntity<Response> logout(@RequestHeader("token") String token) throws UserDetailsNullException {
 		
-		Response userInformation = userservice.loginOut(token);
-		if (userInformation != null) 
+		boolean userInformation = userservice.logout(token);
+		if (userInformation) 
 			return ResponseEntity.status(HttpStatus.OK).body(new Response(200, "Logout Successfull"));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(400, "Logout failed"));
 	}
-	
+
 }
