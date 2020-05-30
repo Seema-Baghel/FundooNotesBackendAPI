@@ -1,6 +1,8 @@
 package com.bridgelabz.fundoonotes.repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,8 +22,14 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 	@Query(value = "select * from user_model where email=?", nativeQuery = true)
 	UserModel findByEmail(String user_mail);
 	
+	@Query(value = "select * from user_model where email=?", nativeQuery = true)
+	Optional<UserModel> findByEmailId(String user_mail);
+	
 	@Query(value = "select * from user_model where user_id = :userId", nativeQuery = true)
 	UserModel findById(long userId);
+	
+	@Query(value = "select * from user_model where user_id = :userId", nativeQuery = true)
+	Optional<UserModel> findUserById(long userId);
 
 	@Modifying
 	@Query(value="Insert into user_model(first_name, last_name, email, mobile, password,is_verified, created_at,modified_time) values (:firstName,:lastName,:email, :mobile, :password,:isVerified,:createdAt,:modifiedTime)",nativeQuery = true)

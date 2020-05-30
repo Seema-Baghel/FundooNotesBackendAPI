@@ -2,6 +2,7 @@ package com.bridgelabz.fundoonotes.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -64,16 +65,19 @@ public class NoteModel {
 	@Column(columnDefinition = "boolean default false")
 	private boolean isTrashed;
 	
+	@JsonIgnore
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<LabelModel> labels;
 	
+	@JsonIgnore
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<CollaboratorModel> collaborator;
+	private Set<UserModel> collaborator;
 	
 	public NoteModel(String title, String description) {
 		super();
 		this.title = title;
 		this.description = description;
 	}
+
 
 }

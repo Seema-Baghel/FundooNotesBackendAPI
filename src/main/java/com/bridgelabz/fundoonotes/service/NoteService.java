@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoonotes.dto.NoteDto;
 import com.bridgelabz.fundoonotes.dto.ReminderDateTimeDto;
+import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.model.NoteModel;
 import com.bridgelabz.fundoonotes.responses.Response;
 
@@ -52,6 +53,10 @@ public interface NoteService {
 	public ResponseEntity<Object> sortByTitle();
 
 	public ResponseEntity<Object> sortByDescription();
+
+	public ResponseEntity<Response> addCollaborator(String token, String email, long noteId) throws UserNotFoundException;
+
+	public ResponseEntity<Response> deleteCollaboratorInNote(String token, long noteId, String email) throws UserNotFoundException;
 
 	
 

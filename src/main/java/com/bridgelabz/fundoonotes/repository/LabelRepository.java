@@ -40,9 +40,9 @@ public interface LabelRepository extends JpaRepository<LabelModel, Long> {
 	List<LabelModel> getall(long userId);
 	
 	@Modifying
-	@Query(value = "insert into note_model_labels(listnote_id ,  labels_label_id)  values(:noteId, :labelId)", nativeQuery = true)
+	@Query(value = "insert into note_model_labels(listnote_note_id ,  labels_label_id)  values(:noteId, :labelId)", nativeQuery = true)
 	void insertdatatomap(long noteId, long labelId);
 
-	@Query(value = "select * from  note_model_labels where listnote_id = :noteId and labels_label_id =:labelId", nativeQuery = true)
+	@Query(value = "select * from  note_model_labels where listnote_note_id = :noteId and labels_label_id =:labelId", nativeQuery = true)
 	Object findoneByLabelIdAndNoteId(long labelId, long noteId);
 }

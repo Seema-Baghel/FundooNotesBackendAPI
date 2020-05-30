@@ -2,6 +2,7 @@ package com.bridgelabz.fundoonotes.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,19 +63,25 @@ public class UserModel {
   	  @Column(columnDefinition = "boolean default false")
   	  public boolean userStatus;
   	  
+  	  @JsonIgnore
+  	  @OneToMany(cascade = CascadeType.ALL)
+  	  private List<NoteModel> notes;
   	
-//  	  @OneToMany(cascade = CascadeType.ALL)
-//  	  @Column(name = "userId")
-//  	  private List<NoteModel> noteList;
-//  	  
-//  	  @OneToMany(cascade = CascadeType.ALL)
-//  	  @Column(name = "userId")
-//  	  private List<LabelModel> labels;
-//  	
-//  	  @ManyToMany(cascade = CascadeType.ALL)
-//  	  @JoinTable(name = "note_model_collaborator", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-//  			  		@JoinColumn(name = "note_id") })
-//  	  private List<CollaboratorModel> collaboratoredNotes;
+  	  @JsonIgnore
+  	  @OneToMany(cascade = CascadeType.ALL)
+  	  private List<LabelModel> label;
+  	
+  	  @JsonIgnore
+  	  @ManyToMany(cascade = CascadeType.ALL)
+  	  private Set<NoteModel> collaboratedNotes;
+
+//  	  public Set<NoteModel> getCollaboratedNotes() {
+//		return collaboratedNotes;
+//  	  }
+//
+//  	  public void setCollaboratedNotes(Set<NoteModel> collaboratedNotes) {
+//		this.collaboratedNotes = collaboratedNotes;
+//  	  }
   	  
   	  public UserModel(String firstName, String lastName, String email, long mobile, String password) {
 		super();

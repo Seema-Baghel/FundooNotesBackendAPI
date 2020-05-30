@@ -14,13 +14,16 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoonotes.dto.NoteDto;
 import com.bridgelabz.fundoonotes.dto.ReminderDateTimeDto;
 import com.bridgelabz.fundoonotes.exception.NoteException;
+import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.model.NoteModel;
 import com.bridgelabz.fundoonotes.model.UserModel;
 import com.bridgelabz.fundoonotes.repository.NoteRepository;
 import com.bridgelabz.fundoonotes.repository.UserRepository;
+import com.bridgelabz.fundoonotes.responses.EmailObject;
 import com.bridgelabz.fundoonotes.responses.Response;
 import com.bridgelabz.fundoonotes.service.NoteService;
 import com.bridgelabz.fundoonotes.utility.Jwt;
+import com.bridgelabz.fundoonotes.utility.RabbitMQSender;
 import com.bridgelabz.fundoonotes.utility.Util;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,9 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Autowired
 	private NoteRepository noteRepository;
+	
+	@Autowired
+	private RabbitMQSender rabbitMQSender;
 	
 	@Autowired
 	List<NoteDto> listOfNotes;
@@ -297,7 +303,7 @@ public class NoteServiceImplementation implements NoteService {
 				note.setTrashed(false);
 				note.setUpdatedDate(LocalDateTime.now());
 				noteRepository.save(note);
-				return ResponseEntity.status(HttpStatus.OK).body(new Response(200,"Note restored"));
+				return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE,"Note restored"));
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(Util.BAD_REQUEST_RESPONSE_CODE,"Error in Restoring note!"));
 		}
@@ -322,6 +328,47 @@ public class NoteServiceImplementation implements NoteService {
 		});
 		
 		return new ResponseEntity<Object>(listOfNotes, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Response> addCollaborator(String token, String email, long noteId) throws UserNotFoundException {
+		long userId = tokenGenerator.parseJwtToken(token);
+		Optional<UserModel> MainUser = userRepository.findUserById(userId);
+		Optional<UserModel> user = userRepository.findByEmailId(email);
+		if (!user.isPresent())
+			throw new UserNotFoundException("No user exist");
+		NoteModel note = noteRepository.findByUserIdAndNoteId(userId, noteId);
+		if (note == null)
+			throw new NoteException("No user exist");
+		if (user.get().getCollaboratedNotes().contains(note))
+			throw new NoteException("Note is already collaborated");
+		user.get().getCollaboratedNotes().add(note);
+		note.getCollaborator().add(user.get());
+		userRepository.save(user.get());
+		noteRepository.save(note);
+		EmailObject collabEmail = new EmailObject();
+		collabEmail.setEmail(email);
+		if(rabbitMQSender.send(new EmailObject(email,"Note collaboration","Note from " + MainUser.get().getEmail() + " collaborated to you\nTitle : " + note.getTitle()
+												+ "\nDescription : " + note.getDescription())));
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE, "Added collabrator sucessfully!!!"));
+
+	}
+
+	@Override
+	public ResponseEntity<Response> deleteCollaboratorInNote(String token, long noteId, String email) throws UserNotFoundException {
+		long userId = tokenGenerator.parseJwtToken(token);
+		Optional<UserModel> user = userRepository.findUserById(userId);
+
+		if (!user.isPresent())
+			throw new UserNotFoundException("No user exist");
+		NoteModel note = noteRepository.findByUserIdAndNoteId(userId, noteId);
+		if (note == null)
+			throw new NoteException( "No note exist");
+		user.get().getCollaboratedNotes().remove(note);
+		note.getCollaborator().remove(user.get());
+		userRepository.save(user.get());
+		noteRepository.save(note);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE,"Deleted collaborator successfully!!!"));
 	}
 
 	

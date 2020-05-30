@@ -29,6 +29,9 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long>{
 	@Query(value = "select * from note_model where user_id = :userId", nativeQuery = true)
 	NoteModel findByuserid(long userId);
 
+	@Query(value = "select * from note_model where user_id = :userId and note_id = :noteId ", nativeQuery = true)
+	NoteModel findByUserIdAndNoteId(long userId, long noteId);
+	
 	@Modifying
 	@Query(value = "insert into note_model (description, created_date, title, note_color, updated_date, user_id) values ( :description, :createdDate, :title, :noteColor, :updatedDate, :userId)" , nativeQuery = true)
 	public void insertData(String description, LocalDateTime createdDate, String title, LocalDateTime updatedDate, String noteColor, long userId);

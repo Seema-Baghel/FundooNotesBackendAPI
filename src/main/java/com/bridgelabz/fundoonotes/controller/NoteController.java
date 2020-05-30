@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoonotes.dto.NoteDto;
 import com.bridgelabz.fundoonotes.dto.ReminderDateTimeDto;
 import com.bridgelabz.fundoonotes.exception.NoteException;
+import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.model.NoteModel;
 import com.bridgelabz.fundoonotes.responses.Response;
 import com.bridgelabz.fundoonotes.service.NoteService;
@@ -250,6 +251,27 @@ public class NoteController {
 		
 		List<NoteModel> notesList = noteService.allUnarchived(token);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("all unarchived notes of user",Util.OK_RESPONSE_CODE, notesList));
+	}
+	
+	/*
+	 * API to add Collaborator
+	 */
+	
+	@PutMapping("/addCollaborator")
+	public ResponseEntity<Response> addCollaborator(@RequestHeader String token, @RequestParam long noteId , @RequestParam String email) throws UserNotFoundException{
+
+		return noteService.addCollaborator(token ,email, noteId);
+			
+	}
+	
+	/*
+	 * API to delete Collaborator
+	 */
+	
+	@PutMapping("/deleteCollaborator")
+	public ResponseEntity<Response> deleteCollaborator(@RequestHeader String token, @RequestParam long noteId,@RequestParam String email) throws UserNotFoundException{
+
+		return noteService.deleteCollaboratorInNote(token, noteId, email);
 	}
 	
 	
