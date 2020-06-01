@@ -45,7 +45,7 @@ public class UserModel {
       
       @NotNull
       @Column(unique = true)
-      private long mobile;
+      private String mobile;
       
       @NotNull
       private String password;
