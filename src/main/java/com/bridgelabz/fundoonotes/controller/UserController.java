@@ -2,6 +2,7 @@ package com.bridgelabz.fundoonotes.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,10 +17,12 @@ import com.bridgelabz.fundoonotes.dto.ResetPasswordDto;
 import com.bridgelabz.fundoonotes.dto.UserDto;
 import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.responses.Response;
+import com.bridgelabz.fundoonotes.responses.UserDetailsResponse;
 import com.bridgelabz.fundoonotes.service.UserService;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 public class UserController {
 	
 	@Autowired
@@ -46,7 +49,7 @@ public class UserController {
 	 */
 	
 	@PostMapping("/login")
-	public ResponseEntity<Response> login(@RequestBody LoginDto logindto) throws UserNotFoundException {
+	public ResponseEntity<UserDetailsResponse> login(@RequestBody LoginDto logindto) throws UserNotFoundException {
 		
 		return userservice.login(logindto);
 	}

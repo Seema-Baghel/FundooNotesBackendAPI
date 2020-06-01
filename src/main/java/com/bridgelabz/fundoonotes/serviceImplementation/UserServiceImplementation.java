@@ -19,6 +19,7 @@ import com.bridgelabz.fundoonotes.model.UserModel;
 import com.bridgelabz.fundoonotes.repository.UserRepository;
 import com.bridgelabz.fundoonotes.responses.EmailObject;
 import com.bridgelabz.fundoonotes.responses.Response;
+import com.bridgelabz.fundoonotes.responses.UserDetailsResponse;
 import com.bridgelabz.fundoonotes.service.UserService;
 import com.bridgelabz.fundoonotes.utility.Jwt;
 import com.bridgelabz.fundoonotes.utility.RabbitMQSender;
@@ -72,7 +73,7 @@ public class UserServiceImplementation implements UserService {
 		throw new InvalidCredentialsException("Invalid Credentials", Util.USER_AUTHENTICATION_EXCEPTION_STATUS); 
    } 
 		
-	public ResponseEntity<Response> login(LoginDto logindto) throws UserNotFoundException {
+	public ResponseEntity<UserDetailsResponse> login(LoginDto logindto) throws UserNotFoundException {
 		 
 		UserModel user = repository.findEmail(logindto.getEmail());
 		if(user != null) {
@@ -81,15 +82,13 @@ public class UserServiceImplementation implements UserService {
 					user.setUserStatus(true);
 					repository.save(user);
 					String token = tokenGenerator.createToken(user.getUserId());
-					log.info("generated token : " + token);
-					return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE, "Login Successfull"));
+					return ResponseEntity.status(HttpStatus.OK).body(new UserDetailsResponse(Util.OK_RESPONSE_CODE, "Login Successfull", token));
 				}
 			}
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(Util.BAD_REQUEST_RESPONSE_CODE, "Login failed"));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDetailsResponse(Util.BAD_REQUEST_RESPONSE_CODE, "Login failed"));
 		}
 		throw new UserNotFoundException("User not found");
 	 }
-
 
 	@Override
 	public ResponseEntity<Response> verify(String token) throws UserNotFoundException, UserVerificationException{

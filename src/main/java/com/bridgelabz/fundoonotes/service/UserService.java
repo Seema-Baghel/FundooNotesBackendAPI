@@ -9,13 +9,14 @@ import com.bridgelabz.fundoonotes.dto.UserDto;
 import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.exception.UserVerificationException;
 import com.bridgelabz.fundoonotes.responses.Response;
+import com.bridgelabz.fundoonotes.responses.UserDetailsResponse;
 
 @Component
 public interface UserService {
 	
 	ResponseEntity<Response> register(UserDto userdto) throws UserNotFoundException;
 
-	ResponseEntity<Response> login(LoginDto logindto) throws UserNotFoundException;
+	ResponseEntity<UserDetailsResponse> login(LoginDto logindto) throws UserNotFoundException;
 
 	ResponseEntity<Response> verify(String token) throws UserNotFoundException, UserVerificationException;
 

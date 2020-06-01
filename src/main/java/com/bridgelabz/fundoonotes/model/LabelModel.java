@@ -32,10 +32,7 @@ public class LabelModel {
 	@NotBlank
 	private String labelTitle;
 
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "userId")
-	private UserModel userLabel;
+	private long userId;
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "labels")
@@ -47,11 +44,11 @@ public class LabelModel {
 		this.labelTitle = labelTitle;
 	}
 
-	public LabelModel(long labelId, @NotBlank String labelTitle, UserModel userLabel, List<NoteModel> listnote) {
+	public LabelModel(long labelId, @NotBlank String labelTitle, long userId, List<NoteModel> listnote) {
 		super();
 		this.labelId = labelId;
 		this.labelTitle = labelTitle;
-		this.userLabel = userLabel;
+		this.userId = userId;
 		this.listnote = listnote;
 	}
 }
