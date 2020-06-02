@@ -83,7 +83,7 @@ public class UserModel {
 //		this.collaboratedNotes = collaboratedNotes;
 //  	  }
   	  
-  	  public UserModel(String firstName, String lastName, String email, long mobile, String password) {
+  	  public UserModel(String firstName, String lastName, String email, String mobile, String password) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;

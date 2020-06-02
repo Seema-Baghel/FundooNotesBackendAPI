@@ -13,7 +13,7 @@ public class UserDto {
 	
     private String  email;
 	
-	private long mobile;
+	private String mobile;
 	
     private String  password;
     

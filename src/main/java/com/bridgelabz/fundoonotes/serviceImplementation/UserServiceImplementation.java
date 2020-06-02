@@ -108,9 +108,9 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public ResponseEntity<Response> forgetPassword(String email) throws UserNotFoundException{
+	public ResponseEntity<Response> forgetPassword(UserDto userdto) throws UserNotFoundException{
 		
-		UserModel isIdAvailable = repository.findEmail(email);
+		UserModel isIdAvailable = repository.findEmail(userdto.getEmail());
 		if (isIdAvailable != null && isIdAvailable.isVerified() == true) {
 			String response = Util.resetpassword_url+ tokenGenerator.createToken(isIdAvailable.getUserId());
 			if(rabbitMQSender.send(new EmailObject(isIdAvailable.getEmail(),"Registration Link...",response)))

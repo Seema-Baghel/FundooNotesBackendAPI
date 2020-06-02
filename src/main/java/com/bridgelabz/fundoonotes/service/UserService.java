@@ -20,7 +20,7 @@ public interface UserService {
 
 	ResponseEntity<Response> verify(String token) throws UserNotFoundException, UserVerificationException;
 
-	ResponseEntity<Response> forgetPassword(String email) throws UserNotFoundException;
+	ResponseEntity<Response> forgetPassword(UserDto email) throws UserNotFoundException;
 	
 	ResponseEntity<Response> resetPassword(ResetPasswordDto resetpassword, String token) throws UserNotFoundException;
 

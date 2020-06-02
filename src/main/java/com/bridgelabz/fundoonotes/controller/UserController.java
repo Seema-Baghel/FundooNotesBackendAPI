@@ -74,8 +74,8 @@ public class UserController {
 	 * @return response
 	 */
 	
-	@PutMapping("/forgotpassword")
-	public ResponseEntity<Response> forgotPassword(@RequestParam("email") String email) throws UserNotFoundException {
+	@PostMapping("/forgotpassword")
+	public ResponseEntity<Response> forgotPassword(@RequestBody UserDto email) throws UserNotFoundException {
 		
 		return userservice.forgetPassword(email);
 	}
@@ -84,16 +84,23 @@ public class UserController {
 	 * API for reset password
 	 * 
 	 * @param token
-	 * @param pwd
+	 * @param resetpassword
 	 * @return response
 	 * @throws Exception
 	 */
 	
-	@PutMapping("/resetpassword/{token}")
+	@PostMapping("/resetpassword/{token}")
 	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @RequestHeader("token") String token) throws UserNotFoundException {
 		
 		return userservice.resetPassword(resetPassword, token);
 	}
+	
+	/**
+	 * API for logout
+	 * 
+	 * @param token
+	 * @return response
+	 */
 	
 	@PostMapping("/logout")
 	public ResponseEntity<Response> logout(@RequestHeader("token") String token) throws UserNotFoundException {
