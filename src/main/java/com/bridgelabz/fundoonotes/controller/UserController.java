@@ -89,7 +89,7 @@ public class UserController {
 	 * @throws Exception
 	 */
 	
-	@PostMapping("/resetpassword/{token}")
+	@PutMapping("/resetpassword")
 	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @RequestHeader("token") String token) throws UserNotFoundException {
 		
 		return userservice.resetPassword(resetPassword, token);

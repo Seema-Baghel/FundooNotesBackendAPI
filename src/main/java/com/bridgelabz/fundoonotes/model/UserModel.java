@@ -74,14 +74,6 @@ public class UserModel {
   	  @JsonIgnore
   	  @ManyToMany(cascade = CascadeType.ALL)
   	  private Set<NoteModel> collaboratedNotes;
-
-//  	  public Set<NoteModel> getCollaboratedNotes() {
-//		return collaboratedNotes;
-//  	  }
-//
-//  	  public void setCollaboratedNotes(Set<NoteModel> collaboratedNotes) {
-//		this.collaboratedNotes = collaboratedNotes;
-//  	  }
   	  
   	  public UserModel(String firstName, String lastName, String email, String mobile, String password) {
 		super();
