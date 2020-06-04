@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonotes.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,15 @@ public class NoteController {
 	@Autowired
 	private NoteService noteService;
 
-	/*
-	 * API to create notes
+	/**
+	 * This function takes {@link NoteDto} as request body and token from
+	 * {@link RequestHeader} and verify originality of client
+	 * {@link NoteServiceImpl} and accordingly returns the response.
+	 * 
+	 * @param noteDto as {@link UserDTO}
+	 * @param token as String input parameter
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/create
 	 */
 	
 	@PostMapping("/create")
@@ -43,11 +51,15 @@ public class NoteController {
 		return noteService.createNote(notedto, token);
 	}
 
-	/*
-	 * API to update notes
+	/**
+	 * This function takes {@link NoteDTO} as request body and token from
+	 * {@link RequestHeader} and verify originality of client
+	 * {@link NoteServiceImpl} and after update accordingly it returns the response.
 	 * 
-	 * @param noteid
-	 * @header token
+	 * @param noteDto as {@link UserDTO}
+	 * @param token   as String input parameter
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/updatenote?id=85
 	 */
 	
 	@PostMapping("/updatenote")
@@ -55,25 +67,34 @@ public class NoteController {
 		return noteService.updateNote(notedto, id, token);
 	}
 	
-	/*
-	 * API to add color to notes
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to change color of the personalized note.
 	 * 
-	 * @param color
-	 * @param noteid
-	 * @header token
+	 * @param token      as {@link RequestHeader}
+	 * @param noteId     as {@link RequestParam}
+	 * @param noteColour as {@link RequestParam}
+	 * @return ResponseEntity<Response>
+	 * @URL -> http://localhost:8080/notes/addcolor?id=1&color=red
 	 */
-
+	
 	@PutMapping("/addcolor")
 	public ResponseEntity<Response> addColor(@RequestHeader("token") String token, @RequestParam("id") long id, @RequestParam("color") String color){
 		
 		return noteService.addColor(token, id, color);
 	}
 	
-	/*
-	 * API to delete notes permanently
+	/**
+	 * This function takes noteId as {@link RequestParam} and token as
+	 * {@link RequestHeader} and verify originality of client
+	 * {@link NoteServiceImpl} and after deletion operation of note accordingly it
+	 * returns the response.
 	 * 
-	 * @param noteid
-	 * @header token
+	 * @param noteId as {@link RequestParam}
+	 * @param token  as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/note/delete?id=1
 	 */
 	
 	@DeleteMapping("/delete")
@@ -82,10 +103,14 @@ public class NoteController {
 		return noteService.deleteNote(token, id);
 	}
 	
-	/*
-	 * API to get all notes
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to get all notes which are not trashed.
 	 * 
-	 * @header token
+	 * @param token as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/note/allnotes
 	 */
 	
 	@GetMapping("/allnotes")
@@ -95,19 +120,34 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("All notes of user", Util.OK_RESPONSE_CODE, notesList));
 	}
 	
-	/*
-	 * API to search notes by its title
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to search for notes based on title.
+	 * 
+	 * @param token as {@link RequestHeader}
+	 * @param noteTitle as as {@link RequestParam}
+	 * @return ResponseEntity<Response>
+	 * @throws IOException 
+	 * @URL -> http://localhost:8080/notes/searchByTitle?title=note1
 	 */
 	
 	@GetMapping("/searchByTitle")
-	public ResponseEntity<Response> searchByTitle(@RequestHeader("token") String token, @RequestParam("title") String noteTitle) {
+	public ResponseEntity<Response> searchByTitle(@RequestHeader("token") String token, @RequestParam("title") String noteTitle) throws IOException {
 		
 		List<NoteModel> findNotes = noteService.searchByTitle(token, noteTitle);
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("found notes", Util.OK_RESPONSE_CODE, findNotes));
 	}
-	
-	/*
-	 * API to search notes by its Description
+
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to search for notes based on title.
+	 * 
+	 * @param token as {@link RequestHeader}
+	 * @param noteTitle as as {@link RequestParam}
+	 * @return ResponseEntity<Response>
+	 * @URL -> http://localhost:8080/notes/searchByDescription?description=helloworld
 	 */
 	
 	@GetMapping("/searchByDescription")
@@ -117,8 +157,11 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("found notes", Util.OK_RESPONSE_CODE, findNotes));
 	}
 	
-	/*
-	 * API to sort notes by its title
+	/**
+	 * This function is used to sort the data in the table
+	 * 
+	 * @return ResponseEntity<Response>
+	 * @URL -> http://localhost:8080/notes/sortByTitle
 	 */
 	
 	@GetMapping("/sortByTitle")
@@ -127,8 +170,11 @@ public class NoteController {
 		return noteService.sortByTitle();
 	}
 	
-	/*
-	 * API to sort notes by its Description
+	/**
+	 * This function is used to sort the data in the table
+	 * 
+	 * @return ResponseEntity<Response>
+	 * @URL -> http://localhost:8080/notes/sortByDescription
 	 */
 	
 	@GetMapping("/sortByDescription")
@@ -137,8 +183,16 @@ public class NoteController {
 		return noteService.sortByDescription();
 	}
 	
-	/*
-	 * API to set reminder to notes
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to add remainder to the personalized note.
+	 * 
+	 * @param token        as {@link RequestHeader}
+	 * @param noteId       as {@link PathVariable}
+	 * @param remainderDTO as {@link RequestBody ReminderDateTimeDto}
+	 * @return ResponseEntity<Response>
+	 * @URL -> http://localhost:8080/notes/setReminder/1/add
 	 */
 	
 	@PostMapping("/setReminder/{id}")
@@ -147,17 +201,33 @@ public class NoteController {
 		return noteService.setReminder(token, reminderDateTimeDto, id);
 	}
 	
-	/*
-	 * API to unset reminder to notes
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to remove the remainder from the personalized note.
+	 * 
+	 * @param token  as {@link RequestHeader}
+	 * @param noteId as {@link PathVariable}
+	 * @return ResponseEntity<Response>
+	 * @URL -> http://localhost:8080/notes/unsetReminder/1
 	 */
+	
 	@PutMapping("/unsetReminder/{id}")
 	public ResponseEntity<Response> unsetReminder(@PathVariable("id") long id, @RequestHeader("token") String token) {
 
 		return noteService.unsetReminder(id, token);
 	}
 	
-	/*
-	 * API to pin and unpin a notes
+	/**
+	 * This function takes noteId as {@link PathVariable} and token as
+	 * {@link RequestHeader} and verify originality of client
+	 * {@link NoteServiceImpl} and after pin operation of note accordingly it
+	 * returns the response.
+	 * 
+	 * @param noteId as {@link PathVariable}
+	 * @param token  as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/pin/1
 	 */
 	
 	@PatchMapping("/pin/{id}")
@@ -167,8 +237,14 @@ public class NoteController {
 
 	}
 	
-	/*
-	 * API to get all pined notes
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to get all notes which are pinned.
+	 * 
+	 * @param token as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/allpinnednotes
 	 */
 		
 	@GetMapping("/allpinnednotes")
@@ -178,8 +254,14 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("all pinned notes of user",Util.OK_RESPONSE_CODE, notesList));
 	}
 	
-	/*
-	 * API to get all unpined notes
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of client {@link NoteServiceImpl} after verification allows user
+	 * to get all notes which are unpinned.
+	 * 
+	 * @param token as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/allunpinnednotes
 	 */
 	
 	@GetMapping("/allunpinnednotes")
@@ -189,8 +271,16 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("all unpinned notes of user",Util.OK_RESPONSE_CODE, notesList));
 	}
 	
-	/*
-	 * API to delete a notes and put it in trash
+	/**
+	 * This function takes noteId as {@link RequestParam} and token as
+	 * {@link RequestHeader} and verify originality of client
+	 * {@link NoteServiceImpl} and after trash operation of note accordingly it
+	 * returns the response.
+	 * 
+	 * @param noteId as {@link RequestParam}
+	 * @param token  as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/trash?id=1
 	 */
 	
 	@DeleteMapping("/trash")
@@ -199,8 +289,14 @@ public class NoteController {
 		return noteService.trashNote(token, noteId); 
 	}
 	
-	/*
-	 * API to get all trashed notes from trash
+	/**
+	 * This function takes authentication token as {@link RequestHeader} and verify
+	 * originality of user {@link NoteServiceImpl} after verification allows user to
+	 * get all trashed notes.
+	 * 
+	 * @param token as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/alltrashednotes
 	 */
 	
 	@GetMapping("/alltrashednotes")
@@ -210,8 +306,16 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("all trashed notes of user",Util.OK_RESPONSE_CODE, notesList));
 	}
 	
-	/*
-	 * API to restore a notes and from trash
+	/**
+	 * This function takes noteId as {@link RequestParam} and token as
+	 * {@link RequestHeader} and verify originality of client
+	 * {@link NoteServiceImpl} and after restore operation of note accordingly it
+	 * returns the response.
+	 * 
+	 * @param noteId as {@link RequestParam}
+	 * @param token  as {@link RequestHeader}
+	 * @return ResponseEntity<Response>
+	 * @URL http://localhost:8080/notes/restore?id=1
 	 */
 	
 	@PutMapping("/restore")

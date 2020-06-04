@@ -40,13 +40,10 @@ public class NoteModel {
 	@Column(length = 7000)
 	private String description;
 	
-	@Column
 	private String NoteColor;
 	
-	@Column
 	private LocalDateTime createdDate;
 	
-	@Column
 	private LocalDateTime updatedDate;
 	
 	private LocalDateTime reminder;

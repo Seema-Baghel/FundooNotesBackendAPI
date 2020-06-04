@@ -16,7 +16,7 @@ public class FundooWebConfig implements WebMvcConfigurer  {
    @Override
    public void addInterceptors(InterceptorRegistry registry) {
        registry.addInterceptor(customInterceptor()).
-       addPathPatterns("/**").excludePathPatterns("/user/register/**","/user/verify/**",
+       addPathPatterns("/**").excludePathPatterns("/user/register/**","/user/verify/{token}/",
         "/user/login/**","/user/forgotpassword/**");
    }
 
@@ -24,6 +24,5 @@ public class FundooWebConfig implements WebMvcConfigurer  {
    public FundooInterceptor customInterceptor() {
        return new FundooInterceptor();
    }
-
 
 }

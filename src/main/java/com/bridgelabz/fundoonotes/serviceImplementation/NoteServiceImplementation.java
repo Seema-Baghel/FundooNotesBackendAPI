@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonotes.serviceImplementation;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +27,6 @@ import com.bridgelabz.fundoonotes.utility.Jwt;
 import com.bridgelabz.fundoonotes.utility.RabbitMQSender;
 import com.bridgelabz.fundoonotes.utility.Util;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class NoteServiceImplementation implements NoteService {
 
@@ -37,7 +35,10 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Autowired
 	private UserRepository userRepository;
-
+	
+	@Autowired
+	private ElasticSearchServiceImplementation elasticSearch;
+	
 	@Autowired
 	private NoteRepository noteRepository;
 	
@@ -58,6 +59,7 @@ public class NoteServiceImplementation implements NoteService {
 			note.setCreatedDate(LocalDateTime.now());
 			note.setUpdatedDate(LocalDateTime.now());
 			noteRepository.save(note);
+			elasticSearch.createNote(note);
 			return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE, "Note is created successfully"));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.BAD_REQUEST_RESPONSE_CODE, "Note not created "));
@@ -73,6 +75,7 @@ public class NoteServiceImplementation implements NoteService {
 			note.setTitle(noteDto.getTitle());
 			note.setUpdatedDate(LocalDateTime.now());
 			noteRepository.updateData(note.getDescription(), note.getTitle(), note.getUpdatedDate(), id, id);
+			elasticSearch.updateNote(note);
 			return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE, "Note is update successfully"));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(Util.BAD_REQUEST_RESPONSE_CODE, "Something went wrong"));
@@ -99,6 +102,7 @@ public class NoteServiceImplementation implements NoteService {
 		UserModel note = userRepository.findById(userId);
 		if (note != null){		
 			noteRepository.deleteNote(userId, noteId);
+			elasticSearch.deleteNote(note);
 			return ResponseEntity.status(HttpStatus.OK).body(new Response(Util.OK_RESPONSE_CODE, "Deleted Succussfully"));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(Util.BAD_REQUEST_RESPONSE_CODE, "Error! note can't be deleted"));
@@ -116,7 +120,7 @@ public class NoteServiceImplementation implements NoteService {
 	}
 
 	@Override
-	public List<NoteModel> searchByTitle(String token, String noteTitle) {
+	public List<NoteModel> searchByTitle(String token, String noteTitle) throws IOException {
 		long userId = tokenGenerator.parseJwtToken(token);
 		Object isUserAvailable = userRepository.findById(userId);
 		if (isUserAvailable != null) {
@@ -125,6 +129,7 @@ public class NoteServiceImplementation implements NoteService {
 				List<NoteModel> list = notes.stream().filter(note ->
 											note.getTitle().contains(noteTitle))
 											.collect(Collectors.toList());
+				elasticSearch.searchbytitle(noteTitle);
 				return list;
 			}
 			throw new NoteException("No note Found");

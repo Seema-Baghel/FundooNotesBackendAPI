@@ -46,7 +46,7 @@ public class MailServiceUtility {
 			mimeMessage.addHeader("Content-type", "text/HTML; charset=UTF-8");
 			mimeMessage.addHeader("format", "flowed");
 			mimeMessage.addHeader("Content-Transfer-Encoding", "8bit");
-			mimeMessage.setFrom(new InternetAddress(Util.SENDER_EMAIL_ID, "Registration link"));
+			mimeMessage.setFrom(new InternetAddress(Util.SENDER_EMAIL_ID, "Verification link"));
 			mimeMessage.setReplyTo(InternetAddress.parse(Util.SENDER_EMAIL_ID, false));
 			mimeMessage.setSubject(subject, "UTF-8");
 			mimeMessage.setText(body, "UTF-8");
@@ -70,8 +70,9 @@ public class MailServiceUtility {
 	@RabbitListener(queues = "rmq.rube.queue")
 	public void recievedMessage(EmailObject mailObject) {
 
-		if (sendMail(mailObject.getEmail(), mailObject.getSubject(), mailObject.getMessage())) 
+		if (sendMail(mailObject.getEmail(), mailObject.getSubject(), mailObject.getMessage())) { 
 			return;
+		}
 		throw new EmailSendingException("Error in Sending mail!", 502);
 	
 	}

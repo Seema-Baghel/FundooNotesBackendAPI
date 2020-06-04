@@ -1,6 +1,5 @@
 package com.bridgelabz.fundoonotes.serviceImplementation;
 
-
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,6 @@ import com.bridgelabz.fundoonotes.utility.RabbitMQSender;
 import com.bridgelabz.fundoonotes.utility.RedisTempl;
 import com.bridgelabz.fundoonotes.utility.Util;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class UserServiceImplementation implements UserService {
 
@@ -61,9 +57,7 @@ public class UserServiceImplementation implements UserService {
 			userDetails.setModifiedTime(LocalDateTime.now());
 			userDetails.setVerified(false);
 			userDetails.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
-			
 			repository.insertdata(userdto.getFirstName(), userdto.getLastName(),userdto.getEmail(),userdto.getMobile(), bCryptPasswordEncoder.encode(userdto.getPassword()), false, LocalDateTime.now(), LocalDateTime.now() );
-
 			UserModel sendMail = repository.findEmail(userdto.getEmail());
 			String response = Util.verify_Mail_Url + tokenGenerator.createToken(sendMail.getUserId());
 			redis.putMap(redisKey, userDetails.getEmail(), userDetails.getFirstName());

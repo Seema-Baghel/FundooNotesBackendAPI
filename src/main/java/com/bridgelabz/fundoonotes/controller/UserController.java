@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoonotes.dto.LoginDto;
@@ -28,11 +28,13 @@ public class UserController {
 	@Autowired
 	private UserService userservice;
 	
+	
 	/**
-	 * API for user registration
+	 * This function takes all user info input as input parameter and checks the
+	 * user validity@see {@link UserService} and accordingly returns the response.
 	 * 
-	 * @param userDto
-	 * @return response
+	 * @param UserDTO as DTO class input parameter
+	 * @return ResponseEntity<Response>
 	 */
 	
 	@PostMapping("/register")
@@ -42,10 +44,13 @@ public class UserController {
 	}  
 	
 	/**
-	 * API for user login
+	 * This function takes LongIn information data given by user on the basis of
+	 * user input information it fetch the complete user checks for conditions
+	 * whether the user is verified or not and also checks whether he is registered
+	 * or not and works accordingly.
 	 * 
-	 * @param loginDetails 
-	 * @return response
+	 * @param loginInformation as {@link LoginDTO}
+	 * @return ResponseEntity<Response>
 	 */
 	
 	@PostMapping("/login")
@@ -55,23 +60,28 @@ public class UserController {
 	}
 	
 	/**
-	 * API for user verification
+	 * This function takes generated token of the user as String input as input
+	 * parameter and checks the user verification @see {@link UserService} and
+	 * accordingly returns the response.
 	 * 
-	 * @param token
-	 * @return response Entity
+	 * @param UserDTO as DTO class input parameter
+	 * @return ResponseEntity<Response>
 	 */
 	
-	@GetMapping("/verify")
-	public ResponseEntity<Response> userVerification(@RequestHeader("token") String token) throws UserNotFoundException {
+	@GetMapping("/verify/{token}")
+	public ResponseEntity<Response> userVerification(@PathVariable("token") String token) throws UserNotFoundException {
 	    
 		return userservice.verify(token);
 	}
 	
 	/**
-	 * API for forget password
+	 * This function takes email id as string input parameter and checks the
+	 * Existence of user from service class on validate credentials, it allows the
+	 * user to reset his password by his mail. Or else, it sends the mail to user
+	 * for verification of his account
 	 * 
-	 * @param email
-	 * @return response
+	 * @param emailId as String input parameter
+	 * @return ResponseEntity<Response>
 	 */
 	
 	@PostMapping("/forgotpassword")
@@ -81,25 +91,29 @@ public class UserController {
 	}
 
 	/**
-	 * API for reset password
+	 * This function takes update password credentials input parameter along with
+	 * valid token as String input parameter after verifying the credentials and
+	 * update the password and after successful update it displays corresponding
+	 * message.
 	 * 
-	 * @param token
-	 * @param resetpassword
-	 * @return response
-	 * @throws Exception
+	 * @param token as String Input parameter
+	 * @param resetPassword as {@link ResetPassword} class
+	 * @return ResponseEntity<Response>
 	 */
 	
-	@PutMapping("/resetpassword")
-	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @RequestHeader("token") String token) throws UserNotFoundException {
+	@PutMapping("/resetpassword/{token}")
+	public ResponseEntity<Response> resetPassword(@RequestBody ResetPasswordDto resetPassword, @PathVariable("token") String token) throws UserNotFoundException {
 		
 		return userservice.resetPassword(resetPassword, token);
 	}
 	
 	/**
-	 * API for logout
+	 * This function takes valid token as String input parameter after verifying 
+	 * it logout successfully it displays corresponding
+	 * message.
 	 * 
-	 * @param token
-	 * @return response
+	 * @param token as String input parameter
+	 * @return ResponseEntity<Response>
 	 */
 	
 	@PostMapping("/logout")

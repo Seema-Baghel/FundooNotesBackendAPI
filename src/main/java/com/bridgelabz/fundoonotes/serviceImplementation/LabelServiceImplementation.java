@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoonotes.dto.LabelDto;
-import com.bridgelabz.fundoonotes.exception.NoteException;
 import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.model.LabelModel;
 import com.bridgelabz.fundoonotes.model.NoteModel;

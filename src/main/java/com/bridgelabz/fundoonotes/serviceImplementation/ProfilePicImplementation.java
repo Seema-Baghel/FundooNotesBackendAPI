@@ -58,10 +58,8 @@ public class ProfilePicImplementation implements ProfilePicService {
 				ObjectMetadata objectMetadata = new ObjectMetadata();
 				objectMetadata.setContentType(contentType);
 				objectMetadata.setContentLength(file.getSize());
-				System.out.println("1");
 				System.out.println(bucketName+" "+fileName+" "+file.getInputStream()+" "+objectMetadata);
 				amazonS3Client.putObject(bucketName, fileName, file.getInputStream(), objectMetadata);
-				System.out.println("11");
 				profilePicRepository.save(profile);
 				return ResponseEntity.status(HttpStatus.OK).body(new Response("Profile added successfully",Util.OK_RESPONSE_CODE, profile));
 			}

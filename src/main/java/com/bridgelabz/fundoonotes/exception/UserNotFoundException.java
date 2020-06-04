@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonotes.exception;
 
+@SuppressWarnings("serial")
 public class UserNotFoundException extends Exception {
 	
 	public enum ExceptionType{
@@ -8,6 +9,7 @@ public class UserNotFoundException extends Exception {
 	
 	public ExceptionType type;
 	
+	@SuppressWarnings("unused")
 	private String message;
 	
 	public UserNotFoundException(String message, ExceptionType type) {

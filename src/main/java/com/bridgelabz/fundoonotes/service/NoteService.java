@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonotes.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public interface NoteService {
 
 	public List<NoteModel> getAllNotes(String token);
 
-	public List<NoteModel> searchByTitle(String token, String noteTitle);
+	public List<NoteModel> searchByTitle(String token, String noteTitle) throws IOException;
 
 	public List<NoteModel> searchByDecription(String token, String noteDescription);
 	
